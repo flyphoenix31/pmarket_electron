@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExtendedServerSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ConfigureAsService>false</ConfigureAsService>
+  <EnterpriseFirewallEnabled>false</EnterpriseFirewallEnabled>
+  <PendingSystemTablesUpgrade>false</PendingSystemTablesUpgrade>
+  <ServerConfigurationType>StandAlone</ServerConfigurationType>
+  <SystemTablesUpgraded>None</SystemTablesUpgraded>
+</ExtendedServerSettings>
