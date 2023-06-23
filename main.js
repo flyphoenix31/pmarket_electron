@@ -13,20 +13,32 @@ const mysql_helper = require('./mysql_helper');
 const router = require('./web/routes');
 const ioHandler = require('./web/ioHandler');
 
+let win = null;
+
+global.sendLog = (log) => {
+    win.webContents.send('log', log);
+}
+
 const createWindow = () => {
-    const win = new BrowserWindow({
-      width: 800,
-      height: 600,
-      webPreferences: {
-        preload: path.join(__dirname, 'preload.js')
-      }
+    win = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js')
+        }
     })
-  
+
     win.loadFile('index.html')
-  }
+    win.webContents.openDevTools();
+    win.webContents.on('did-finish-load', () => {
+        console.log(123123123123123);
+        // sendLog("Hello");
+        mysql_helper.startServer();
+    });
+}
 
 app.whenReady().then(() => {
-    ipcMain.handle('ping', () => 'pong');
+    ipcMain.handle('ping', () => __dirname);
     createWindow();
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
@@ -48,8 +60,6 @@ app.on('window-all-closed', async () => {
     }
 })
 
-mysql_helper.startServer();
-
 express_app.use(express.static('web/client'));
 express_app.use('/', router);
 // express_app.get('/', (req, res) => res.send('asdfasdf'));
@@ -64,3 +74,5 @@ httpServer.listen(9000, () => {
 //     // console.log(data.list[0]);
 // })
 // si.networkStats("pmarket_mysqld.exe").then(data => console.log("data:", data));
+
+console.log(path.resolve(__dirname, '..\\client\\index.html'));

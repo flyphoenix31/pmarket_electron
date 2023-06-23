@@ -11,8 +11,9 @@ port=${port}
 [mysql]
 no-beep
 [mysqld]
+explicit_defaults_for_timestamp = 1
 port=${port}
-datadir=${__dirname}\\mysql\\data\\Data
+datadir="${__dirname}\\mysql\\data\\Data"
 default-storage-engine=INNODB
 sql-mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 log-output=FILE
@@ -99,7 +100,9 @@ const startServer = () => {
         killServer().then(() => {
             initIniFile().then(() => {
                 let isResolved = false;
-                const process = child_process.exec(`\"${__dirname}\\mysql\\server\\bin\\pmarket_mysqld.exe\" --defaults-file=\"${__dirname}\\mysql\\data\\pmarket.ini\"`, (error, stdout, stderr) => {
+                const cmd = `\"${__dirname}\\mysql\\server\\bin\\pmarket_mysqld.exe\" --defaults-file=\"${__dirname}\\mysql\\data\\pmarket.ini\"`;
+                global.sendLog(`starting server: ${cmd}`);
+                const process = child_process.exec(cmd, (error, stdout, stderr) => {
                     console.log("error:", error);
                     console.log("stdout:", stdout);
                     console.log("stderr:", stderr);

@@ -6,3 +6,7 @@ const func = async() => {
     console.log(response)
 }
 func();
+
+window.versions.onLog((event, value) => {
+    console.log("main logg ==>", value);
+})
