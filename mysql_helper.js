@@ -2,6 +2,17 @@ const si = require('systeminformation');
 var child_process = require('child_process');
 const ps = require('ps-node');
 const fs = require('fs');
+const path = require('path');
+
+const mysqlPath = path.join(__dirname, "mysql");
+
+const mysqlPathFilter = (path) => {
+    const dangerLetters = ['r', 'n', 'b', 't', 'v'];
+    dangerLetters.forEach(letter => {
+        path = path.replaceAll(`\\${letter}`, `\\\\${letter}`);
+    });
+    return path;
+}
 
 const initIniFile = (/*{ port = 33061 }*/) => {
     const port = 33061
@@ -13,7 +24,8 @@ no-beep
 [mysqld]
 explicit_defaults_for_timestamp = 1
 port=${port}
-datadir="${__dirname}\\mysql\\data\\Data"
+datadir='${mysqlPathFilter(path.join(mysqlPath, "data\\Data"))}'
+#datadir="${__dirname}\\mysql\\data\\Data"
 default-storage-engine=INNODB
 sql-mode="ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 log-output=FILE
@@ -25,7 +37,8 @@ long_query_time=10
 log-error="DESKTOP-7QD7IA6.err"
 server-id=1
 lower_case_table_names=1
-secure-file-priv="${__dirname}\\mysql\\data\\Uploads"
+secure-file-priv='${mysqlPathFilter(path.join(mysqlPath, "data\\Uploads"))}'
+#secure-file-priv="${__dirname}\\mysql\\data\\Uploads"
 max_connections=151
 table_open_cache=2000
 tmp_table_size=141M
@@ -57,41 +70,46 @@ sync_master_info=10000
 sync_relay_log=10000
 sync_relay_log_info=10000`;
     return new Promise(resolve => {
-        fs.writeFile(`${__dirname}/mysql/data/pmarket.ini`, initContent, (err) => {
+        fs.writeFile(path.join(mysqlPath, "data\\pmarket.ini"), initContent, (err) => {
             console.log(err);
             resolve({ err });
         })
     })
 }
 
-const killServer = () => {
+const findMySqlProcess = () => {
     return new Promise(resolve => {
         si.processes().then(data => {
             const index = data.list.findIndex(item => item.name == 'pmarket_mysqld.exe');
             if (index < 1) {
-                throw('process not found');
+                resolve(null);
             }
-            console.log("index: ", index, "pid: ", data.list[index].pid)
-            // ps.kill(data.list[index].pid, {
-            //     signal: 'SIGKILL',
-            //     timeout: 3,  // will set up a ten seconds timeout if the killing is not successful
-            // }, function (err) {
-            //     if (err) {
-            //         console.log(err);
-            //     }
-            //     else {
-            //         console.log('Process %s has been killed!', pid);
-            //     }
-            //     resolve();
-            // });
-            child_process.exec(`taskkill /f /pid ${data.list[index].pid}`, (error, stdout, stderr) => {
-                console.log('mysql killed');
-                resolve();
-            });
-        }).catch(err => {
-            console.log(err);
-            resolve();
-        })
+            else {
+                resolve(data.list[index]);
+            }
+        });
+    });
+}
+
+const killServer = () => {
+    return new Promise(resolve => {
+        findMySqlProcess().then(process => {
+            if (process) {
+                child_process.exec(`taskkill /f /pid ${process.pid}`, (error, stdout, stderr) => {
+                    console.log('mysql killed');
+                });
+            }
+        });
+        const check = () => {
+            findMySqlProcess().then(process => {
+                if (!process) {
+                    resolve();
+                    return;
+                }
+                setTimeout(check, 1000);
+            })
+        };
+        check();
     });
 }
 
@@ -100,15 +118,19 @@ const startServer = () => {
         killServer().then(() => {
             initIniFile().then(() => {
                 let isResolved = false;
-                const cmd = `\"${__dirname}\\mysql\\server\\bin\\pmarket_mysqld.exe\" --defaults-file=\"${__dirname}\\mysql\\data\\pmarket.ini\"`;
+                const cmd = `"${path.join(mysqlPath, "server\\bin\\pmarket_mysqld.exe")}" --defaults-file="${path.join(mysqlPath, "data\\pmarket.ini")}"`;
+                // const cmd = `"${__dirname}\\mysql\\server\\bin\\pmarket_mysqld.exe\" --defaults-file="${__dirname}\\mysql\\data\\pmarket.ini"`;
                 global.sendLog(`starting server: ${cmd}`);
                 const process = child_process.exec(cmd, (error, stdout, stderr) => {
-                    console.log("error:", error);
-                    console.log("stdout:", stdout);
-                    console.log("stderr:", stderr);
+                    // console.log("error:", error);
+                    // console.log("stdout:", stdout);
+                    // console.log("stderr:", stderr);
+                    global.sendLog(`error: ${JSON.stringify(error)}`);
+                    global.sendLog(`stdout: ${JSON.stringify(stdout)}`);
+                    global.sendLog(`stderr: ${JSON.stringify(stderr)}`);
                     if (!isResolved) {
                         isResolved = true;
-                        resolve();
+                        setTimeout(() => resolve(), 5000);
                     }
                 });
 
@@ -116,7 +138,7 @@ const startServer = () => {
                     console.log('spawn');
                     if (!isResolved) {
                         isResolved = true;
-                        resolve();
+                        setTimeout(() => resolve(), 5000);
                     }
                 });
                 // mysql_process.on("close", (number, signal) => console.log("close:", number, signal));
