@@ -8,9 +8,7 @@ opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'secret';
 
 passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-    mysql.query(`Select * from users where id = ${jwt_payload.id}`).then((result) => {
-        const [user] = result;
-        console.log("user:", user);
+    mysql.select("users", {id: jwt_payload.id, deleted_at: null}).then(([user]) => {
         if (!user) return done(err, false);
         return done(null, user);
     }).catch(err => {

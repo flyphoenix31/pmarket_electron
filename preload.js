@@ -5,7 +5,9 @@ contextBridge.exposeInMainWorld('versions', {
     chrome: () => process.versions.chrome,
     electron: () => process.versions.electron,
     ping: () => ipcRenderer.invoke('ping'),
-    onLog: (callback) => ipcRenderer.on('log', callback)
+    onLog: (callback) => ipcRenderer.on('log', callback),
+    sendEvent: (event) => ipcRenderer.invoke('event', event),
+    onEvent: (callback) => ipcRenderer.on('event', callback)
 })
 
 // window.addEventListener('DOMContentLoaded', () => {

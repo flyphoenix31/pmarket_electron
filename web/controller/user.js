@@ -3,12 +3,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
-const { findByName, findByEmail } = require('../models/User');
+const User = require('../models/User');
+const moment = require('moment');
+const { escapeHTML } = require('../utils');
+const { escape } = require('mysql');
 
 exports.login = (req, res) => {
-    const { email, password } = req.body;
-    mysql.query(`select * from users where email='${email}'`).then(result => {
-        const [user] = result;
+    let { email, password } = req.body;
+    email = escapeHTML(email);
+    mysql.select("users", { email, deleted_at: null }).then(([user]) => {
         if (!user) {
             return res.json({
                 status: 1,
@@ -49,7 +52,7 @@ exports.current = (req, res) => {
 }
 
 exports.list = (req, res) => {
-    mysql.query("select * from users").then(users => {
+    mysql.select("users", { deleted_at: { eq: null } }).then(users => {
         return res.json({
             status: 0,
             users
@@ -63,40 +66,163 @@ exports.list = (req, res) => {
     })
 }
 
-exports.new = (req, res) => {
-    const { name, email, password, phone, gender: gender_id } = req.body;
+const validate = (user, newUser = true) => {
+    const { name, email, password, phone, gender } = user;
     const errors = {};
     if (isEmpty(name)) errors.name = 'Name field is required';
     if (isEmpty(email)) errors.email = 'Email field is required';
-    if (isEmpty(password)) errors.password = 'Password field is required';
+    if (newUser && isEmpty(password)) errors.password = 'Password field is required';
     if (isEmpty(phone)) errors.phone = 'Phone field is required';
     if (isEmpty(gender)) errors.gender = 'Gender field is required';
-    if (!isEmpty(errors))
+    return {
+        isValid: !Object.keys(errors).length,
+        errors
+    }
+}
+
+exports.delete = (req, res) => {
+    const { id, isDelete } = req.body;
+    User.update({ id }, { deleted_at: isDelete ? "2022-03-27 09:22:22" : null }).then(() => {
+        res.json({
+            status: 0
+        })
+    }).catch(err => {
+        res.json({
+            status: 1,
+            message: 'Please try again later'
+        })
+    })
+}
+
+exports.updatePassword = (req, res) => {
+    let { id, password } = req.body;
+    if (isEmpty(password)) password = "123456789";
+    bcrypt.hash(password, 0).then(hash => {
+        password = hash;
+        User.update({ id }, { password, updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss") }).then(() => {
+            return res.json({
+                status: 0,
+                message: "Succeed"
+            })
+        }).catch(err => {
+            console.log(err);
+            return res.json({
+                status: 1,
+                message: "Please try again later"
+            })
+        })
+    }).catch(err => {
+        console.log(err);
+        return res.json({
+            status: 1,
+            message: "Please try again later"
+        })
+    })
+}
+
+exports.update = (req, res) => {
+    const { isValid, errors } = validate(req.body, false);
+    if (!isValid) {
+        return res.json({
+            status: 1,
+            errors
+        })
+    }
+    let { id, name, email, phone, gender } = req.body;
+    id = escapeHTML(id);
+    name = escapeHTML(name);
+    email = escapeHTML(email);
+    phone = escapeHTML(phone);
+    gender = escapeHTML(gender);
+
+    mysql.select("users", { name, id: { neq: id } }).then(([user]) => {
+        if (user) {
+            return res.json({
+                status: 1,
+                errors: { name: "Name already exists" }
+            })
+        }
+        mysql.select("users", { email, id: { neq: id } }).then(([user]) => {
+            if (user) {
+                return res.json({
+                    status: 1,
+                    errors: { email: "Email already exists" }
+                })
+            }
+            const updateUser = {
+                name,
+                email,
+                phone,
+                gender,
+                updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
+            }
+            User.update({ id }, updateUser).then(() => {
+                res.json({
+                    status: 0
+                })
+            }).catch(err => {
+                console.log(err);
+                res.json({
+                    status: 1,
+                    message: 'Please try again later'
+                })
+            })
+        }).catch(err => {
+            console.log(err);
+            return res.json({
+                status: 1,
+                message: "Please try again later"
+            })
+        })
+    }).catch(err => {
+        console.log(err);
+        return res.json({
+            status: 1,
+            message: "Please try again later"
+        })
+    })
+}
+
+exports.new = (req, res) => {
+    const { isValid, errors } = validate(req.body);
+    if (!isValid) {
         return res.json({
             status: 1,
             errors
         });
+    }
 
-    findByName(name).then(user => {
-        if (user)
+    let { name, email, password, phone, gender } = req.body;
+    name = escapeHTML(name);
+    email = escapeHTML(email);
+    phone = escapeHTML(phone);
+    gender = escapeHTML(gender)
+
+    User.findByName(name).then(user => {
+        if (user) {
             return res.json({
-                status: 0,
+                status: 1,
                 errors: { name: 'Name already exists' }
             })
-        findByEmail(email).then(user => {
+        }
+        User.findByEmail(email).then(user => {
             if (user)
                 return res.json({
-                    status: 0,
+                    status: 1,
                     errors: { email: 'Email already exists' }
-                })
+                });
             const newUser = {
-                name, email, password, phone, gender_id
+                name, email, password, phone, gender
             }
             bcrypt.hash(newUser.password, 0).then(hash => {
                 newUser.password = hash;
-                mysql.query(`insert into users (name, email, password, phone, gender_id) values('${newUser.name}', '${newUser.email}', '${newUser.password}', '${newUser.phone}', '${newUser.gender_id}')`).then(() => {
+                newUser.created_at = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
+                newUser.updated_at = newUser.created_at;
+                newUser.work_status = 0;
+                User.new(newUser).then(user => {
                     return res.json({
-                        status: 0
+                        status: 0,
+                        user
                     })
                 }).catch(err => {
                     console.log(err);

@@ -6,19 +6,21 @@ $(document).ready(function() {
     Waves.attach('.float-buttons', ['waves-button', 'waves-float']);
     Waves.attach('.float-button-light', ['waves-button', 'waves-float', 'waves-light']);
     Waves.attach('.flat-buttons', ['waves-button', 'waves-float', 'waves-light', 'flat-buttons']);
-    $(document).ready(function(){
-        $(".header-notification").click(function(){
-            $(this).find(".show-notification").slideToggle(500);
-            $(this).toggleClass('active');
-        });
-    });
-    $(document).on("click", function(event){
-        var $trigger = $(".header-notification");
-        if($trigger !== event.target && !$trigger.has(event.target).length){
-            $(".show-notification").slideUp(300);
-            $(".header-notification").removeClass('active');
-        }
-    });
+    // $(document).ready(function(){
+    //     $(".header-notification").click(function(){
+    //         $(this).find(".show-notification").slideToggle(500);
+    //         $(this).toggleClass('active');
+    //     });
+    // });
+    // $(document).on("click", function(event){
+    //     var $trigger = $(".header-notification");
+    //     // $(".show-notification").toggle(300);
+    //     // $(".header-notification").toggleClass('active');
+    //     if($trigger !== event.target && !$trigger.has(event.target).length){
+    //         $(".show-notification").slideUp(300);
+    //         $(".header-notification").removeClass('active');
+    //     }
+    // });
     $('.theme-loader').animate({
         'opacity': '0',
     }, 1200);

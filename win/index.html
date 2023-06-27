@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <title>PMARKET</title>
+
+    <link rel="stylesheet" type="text/css" href="./assets/plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+</head>
+
+<body>
+    <div class="p-3 text-center">
+        <h1>PMARKET SERVER MANAGER</h1>
+    </div>
+    <p id="info"></p>
+    <div class="container">
+        <div class="d-flex mb-2">
+            <div class="ml-auto">
+                <input type="checkbox" class="form-check-input" id="hkcu_checkbox">
+                <label class="form-check-label" for="hkcu_checkbox">Run in startup</label>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header d-flex">
+                <span class="my-auto">MySQL</span>
+                <div class="ml-auto">
+                    <a class="btn btn-primary ml-auto text-white" id="mysql_start">Start</a>
+                    <a class="btn btn-danger ml-auto text-white d-none" id="mysql_stop">Stop</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    Status:<b> <span class="text-secondary" id="mysql_status">Not started yet</span></b>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-2">
+            <div class="card-header d-flex">
+                <span class="my-auto">Web Server</span>
+                <div class="ml-auto d-flex">
+                    <div class="input-group my-auto mr-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon3">PORT:</span>
+                        </div>
+                        <input type="text" class="form-control" id="webserver_port" value="80">
+                    </div>
+                    <a class="btn btn-primary ml-auto text-white" id="webserver_start">Start</a>
+                    <a class="btn btn-danger ml-auto text-white d-none" id="webserver_stop">Stop</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div>
+                    Status:<b> <span class="text-secondary" id="webserver_status">Not started yet</span></b>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./assets/plugins/jquery.min.js"></script>
+<script src="./assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="./index.js"></script>
+
+</html>

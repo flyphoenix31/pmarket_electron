@@ -10,11 +10,11 @@ $(document).ready(function() {
         }, 700);
     });
 
-    $(".scroll-widget").slimScroll({
-        size: "5px",
-        height: "290px",
-        allowPageScroll: false,
-    });
+    // $(".scroll-widget").slimScroll({
+    //     size: "5px",
+    //     height: "290px",
+    //     allowPageScroll: false,
+    // });
     var charts1 = AmCharts.makeChart("sales-analytics", {
         "type": "serial",
         "theme": "light",

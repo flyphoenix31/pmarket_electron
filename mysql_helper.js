@@ -151,6 +151,16 @@ const startServer = () => {
     })
 }
 
+const checkMysqlServerStatus = () => {
+    findMySqlProcess().then(process => {
+        global.sendEvent({type: 'mysql_status', data: process?true:false});
+    }).catch(err=>{}).finally(() => {
+        setTimeout(checkMysqlServerStatus, 5000);
+    });
+}
+
+checkMysqlServerStatus();
+
 module.exports = {
     initIniFile,
     startServer,

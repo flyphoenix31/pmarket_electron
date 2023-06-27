@@ -10,5 +10,8 @@ router.get('/current', passport.authenticate('jwt', { session: false }), UserCon
 router.get('/list', passport.authenticate('jwt', { session: false}), UserController.list);
 
 router.post('/register', passport.authenticate('jwt', { session: false}), UserController.new);
+router.post('/update', passport.authenticate('jwt', { session: false}), UserController.update);
+router.post('/password/update', passport.authenticate('jwt', { session: false}), UserController.updatePassword);
+router.post('/delete', passport.authenticate('jwt', { session: false}), UserController.delete);
 
 module.exports = router;

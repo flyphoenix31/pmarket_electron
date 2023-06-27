@@ -19,8 +19,32 @@ exports.findByEmail = (email) => {
     })
 }
 
-exports.new = (newUser) => {
+exports.findById = (id) => {
     return new Promise((resolve, inject) => {
-        
+        mysql.query(`select * from users where id = '${id}'`).then(([user]) => {
+            resolve(user);
+        }).catch(err => {
+            inject(err);
+        })
+    })
+}
+
+exports.new = (newUser) => {
+    return new Promise((resolve, reject) => {
+        mysql.insertOne('users', newUser).then(user => {
+            resolve(user)
+        }).catch(err => {
+            reject(err);
+        });
     });
+}
+
+exports.update = (cond, updatedUser) => {
+    return new Promise((resolve, reject) => {
+        mysql.update('users', cond, updatedUser).then(() => {
+            resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
 }

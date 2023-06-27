@@ -150,30 +150,31 @@ $.fn.pcodedmenu = function(settings) {
                             rel = $this.attr("rel");
                             el = $(".pcoded-navbar");
                             if ($("#pcoded").attr("vertical-nav-type")=="collapsed") {
-                                $(".main-menu").slimScroll({destroy: true});
+                                // $(".main-menu").slimScroll({destroy: true});
                                 $(".main-menu").css('overflow', 'visible');
-                            } else {
-                                $(".main-menu").slimScroll({
-                                    setTop: "1px",
-                                    size: '5px',
-                                    wheelStep: 10,
-                                    alwaysVisible : true,
-                                    allowPageScroll:true,
-                                    height:"100%",
-                                    width:"100%",
-                                });
-                            }
+                            } 
+                            // else {
+                            //     $(".main-menu").slimScroll({
+                            //         setTop: "1px",
+                            //         size: '5px',
+                            //         wheelStep: 10,
+                            //         alwaysVisible : true,
+                            //         allowPageScroll:true,
+                            //         height:"100%",
+                            //         width:"100%",
+                            //     });
+                            // }
                         });
                     }
-                    $(".main-menu").slimScroll({
-                        setTop: "1px",
-                        size: '5px',
-                        wheelStep: 10,
-                        alwaysVisible : true,
-                        allowPageScroll:true,
-                        height:"100%",
-                        width:"100%",
-                    });
+                    // $(".main-menu").slimScroll({
+                    //     setTop: "1px",
+                    //     size: '5px',
+                    //     wheelStep: 10,
+                    //     alwaysVisible : true,
+                    //     allowPageScroll:true,
+                    //     height:"100%",
+                    //     width:"100%",
+                    // });
                 }
             }
         },
