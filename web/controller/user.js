@@ -52,16 +52,32 @@ exports.current = (req, res) => {
 }
 
 exports.list = (req, res) => {
-    mysql.select("users", { deleted_at: { eq: null } }).then(users => {
+    User.listWithPagination({ deleted_at: null}, req.query.page, req.query.perPage).then(({list, page, perPage, totalPage}) => {
         return res.json({
             status: 0,
-            users
+            users: list,
+            page, perPage, totalPage
         })
     }).catch(err => {
         console.log(err);
         res.json({
             status: 1,
-            message: "Please try again later."
+            message: 'Please try again later.'
+        })
+    })
+}
+
+exports.jobUsers = (req, res) => {
+    mysql.query("select users.* from users, roles where users.role_id = roles.id and roles.name='designer'").then(list => {
+        return res.json({
+            status: 0,
+            list
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: 'Please try again later.'
         })
     })
 }

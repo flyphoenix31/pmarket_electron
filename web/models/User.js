@@ -1,3 +1,4 @@
+const { getProperPagination } = require('../utils');
 const mysql = require('./mysqlConnect');
 exports.findByName = (name) => {
     return new Promise((resolve, inject) => {
@@ -43,6 +44,26 @@ exports.update = (cond, updatedUser) => {
     return new Promise((resolve, reject) => {
         mysql.update('users', cond, updatedUser).then(() => {
             resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
+exports.listWithPagination = (cond, page_ = 1, perPage_ = 10) => {
+    return new Promise((resolve, reject) => {
+        mysql.select("users", cond, { isGetCount: true }).then(totalCount => {
+            let {page, perPage, totalPage} = getProperPagination(page_, perPage_, totalCount);
+            mysql.select("users", cond, {offset: (page - 1) * perPage, limit: perPage}).then(list => {
+                resolve({
+                    list,
+                    page,
+                    perPage,
+                    totalPage
+                })
+            }).catch(err => {
+                reject(err);
+            })
         }).catch(err => {
             reject(err);
         })

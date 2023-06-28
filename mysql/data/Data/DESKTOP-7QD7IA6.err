@@ -4509,3 +4509,48 @@ Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
 2023-06-27T00:37:57.512261Z 0 [Note] Event Scheduler: Loaded 0 events
 2023-06-27T00:37:57.512731Z 0 [Note] E:\mailbox\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
 Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-06-27T15:17:51.419631Z 0 [Note] E:\mailbox\electron\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 1868 ...
+2023-06-27T15:17:51.457500Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-06-27T15:17:51.458085Z 0 [Note] InnoDB: Uses event mutexes
+2023-06-27T15:17:51.458415Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-06-27T15:17:51.458868Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-06-27T15:17:51.459242Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-06-27T15:17:51.460117Z 0 [Note] InnoDB: Number of pools: 1
+2023-06-27T15:17:51.460543Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-06-27T15:17:51.463121Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-06-27T15:17:51.469501Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-06-27T15:17:51.617158Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-06-27T15:17:51.626477Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 4613201
+2023-06-27T15:17:51.626927Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 4613210
+2023-06-27T15:17:51.627383Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-06-27T15:17:51.627757Z 0 [Note] InnoDB: Starting crash recovery.
+2023-06-27T15:17:53.746470Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-06-27T15:17:53.747012Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-06-27T15:17:53.747673Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-06-27T15:17:53.910612Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-06-27T15:17:53.923761Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-06-27T15:17:53.924364Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-06-27T15:17:53.924979Z 0 [Note] InnoDB: Waiting for purge to start
+2023-06-27T15:17:53.998821Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 4613210
+2023-06-27T15:17:53.999521Z 0 [Note] InnoDB: Loading buffer pool(s) from E:\mailbox\electron\mysql\data\Data\ib_buffer_pool
+2023-06-27T15:17:53.999557Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-06-27T15:17:54.208692Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-06-27T15:17:54.209378Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-06-27T15:17:54.209931Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-06-27T15:17:54.210414Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-06-27T15:17:54.225444Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-06-27T15:17:54.226011Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-06-27T15:17:54.235377Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-06-27T15:17:54.236058Z 0 [Note] IPv6 is available.
+2023-06-27T15:17:54.236354Z 0 [Note]   - '::' resolves to '::';
+2023-06-27T15:17:54.236714Z 0 [Note] Server socket created on IP: '::'.
+2023-06-27T15:17:54.291615Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230627  8:17:54
+2023-06-27T15:17:54.479076Z 0 [Note] Failed to start slave threads for channel ''
+2023-06-27T15:17:55.385630Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-06-27T15:17:55.386169Z 0 [Note] E:\mailbox\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-06-27T20:31:31.719745Z 2477 [Note] Aborted connection 2477 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-06-27T20:38:20.193733Z 2616 [Note] Aborted connection 2616 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-06-27T20:38:47.222210Z 2618 [Note] Aborted connection 2618 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-06-27T20:39:36.686005Z 2660 [Note] Aborted connection 2660 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-06-27T21:19:14.954333Z 3363 [Note] Aborted connection 3363 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)

@@ -8,6 +8,7 @@ const { UserController } = require('../../controller');
 router.post('/login', UserController.login);
 router.get('/current', passport.authenticate('jwt', { session: false }), UserController.current);
 router.get('/list', passport.authenticate('jwt', { session: false}), UserController.list);
+router.get('/jobUsers', passport.authenticate('jwt', { session: false}), UserController.jobUsers);
 
 router.post('/register', passport.authenticate('jwt', { session: false}), UserController.new);
 router.post('/update', passport.authenticate('jwt', { session: false}), UserController.update);

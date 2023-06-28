@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const isEmpty = require('../utils/isEmpty');
 const query = (sql) => {
     const connection = mysql.createConnection({
         host: 'localhost',
@@ -9,6 +10,9 @@ const query = (sql) => {
         multipleStatements: true
     });
     return new Promise((resolve, reject) => {
+        if (isEmpty(sql)) {
+            return resolve();
+        }
         connection.query(sql, (err, results, fields) => {
             if (err) {
                 reject(err);
@@ -21,24 +25,29 @@ const query = (sql) => {
     });
 }
 
+const getInsertQuery = (table, params) => {
+    let insertQuery = `insert into ${table} (`;
+    let valuesStr = `values(`;
+    Object.keys(params).forEach((key, index) => {
+        if (index) {
+            insertQuery += ',';
+            valuesStr += ',';
+        }
+        insertQuery += key;
+        if (typeof (params[key]) == 'string')
+            valuesStr += `'${params[key]}'`;
+        else
+            valuesStr += `${params[key]}`;
+    })
+    insertQuery += ') ';
+    valuesStr += ');';
+    insertQuery += valuesStr;
+    return insertQuery;
+}
+
 const insertOne = (table, params) => {
     return new Promise((resolve, reject) => {
-        let insertQuery = `insert into ${table} (`;
-        let valuesStr = `values(`;
-        Object.keys(params).forEach((key, index) => {
-            if (index) {
-                insertQuery += ',';
-                valuesStr += ',';
-            }
-            insertQuery += key;
-            if (typeof (params[key]) == 'string')
-                valuesStr += `'${params[key]}'`;
-            else
-                valuesStr += `${params[key]}`;
-        })
-        insertQuery += ') ';
-        valuesStr += ')';
-        insertQuery += valuesStr;
+        let insertQuery = getInsertQuery(table, params);
         query(insertQuery).then(({ insertId }) => {
             query(`select * from ${table} where id = ${insertId}`).then(([item]) => {
                 resolve(item);
@@ -51,6 +60,20 @@ const insertOne = (table, params) => {
     });
 }
 
+const insertMany = (table, params) => {
+    return new Promise((resolve, reject) => {
+        let insertQuery = '';
+        params.forEach(param => {
+            insertQuery += getInsertQuery(table, param);
+        })
+        query(insertQuery).then(result => {
+            resolve(result);
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
 const generateCondStr = (conds, statement = 'and') => {
     console.log("asdf", conds, statement);
     if (typeof (conds) != 'object' || conds === null || conds.eq !== undefined || conds.neq !== undefined || conds.like !== undefined) {
@@ -58,7 +81,7 @@ const generateCondStr = (conds, statement = 'and') => {
             return `${statement} is null`;
         if (typeof (conds) === 'string')
             return `${statement} = '${conds}'`;
-        if (typeof(conds) == "object") {
+        if (typeof (conds) == "object") {
             if (conds.like !== undefined) {
                 return `${statement} like '${conds.like}'`;
             }
@@ -122,21 +145,41 @@ const update = (table, conds, params) => {
     })
 }
 
-const select = (table, conds) => {
+const select = (table, conds, extra = {}) => {
     return new Promise((resolve, reject) => {
-        let findQuery = ' where';
-        findQuery += generateCondStr(conds);
+        let findQuery = '';
+        if (conds) {
+            findQuery = ' where';
+            findQuery += generateCondStr(conds);
+        }
         console.log(generateCondStr(conds));
-        query(`select * from ${table} ${findQuery}`).then(result => {
-            resolve(result);
+        let extraQuery = '';
+        if (extra.orderBy) {
+            extraQuery = 'order by ';
+            Object.keys(extra.orderBy).forEach((key, index) => {
+                if (index) extraQuery += ' ,';
+                extraQuery += `${key} ${extra.orderBy[key]}`;
+            })
+        }
+        if (extra.limit) {
+            extraQuery += ` limit ${extra.limit}`
+        }
+        if (extra.offset) {
+            extraQuery += ` offset ${extra.offset}`
+        }
+        let selectQuery = `select *`;
+        if (extra.isGetCount) {
+            selectQuery = `select count(*) cnt`;
+        }
+        query(`${selectQuery} from ${table} ${findQuery} ${extraQuery}`).then(result => {
+            if (extra.isGetCount) {
+                return resolve(result[0].cnt);
+            }
+            return resolve(result);
         }).catch(err => {
             reject(err);
         })
     })
 }
 
-const updateMany = (table, params) => {
-
-}
-
-module.exports = { query, select, insertOne, update };
+module.exports = { query, select, getInsertQuery, insertOne, insertMany, update };
