@@ -3,6 +3,7 @@ var child_process = require('child_process');
 const ps = require('ps-node');
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment');
 
 const mysqlPath = path.join(__dirname, "mysql");
 
@@ -153,16 +154,37 @@ const startServer = () => {
 
 const checkMysqlServerStatus = () => {
     findMySqlProcess().then(process => {
-        global.sendEvent({type: 'mysql_status', data: process?true:false});
-    }).catch(err=>{}).finally(() => {
+        global.sendEvent({ type: 'mysql_status', data: process ? true : false });
+    }).catch(err => { }).finally(() => {
         setTimeout(checkMysqlServerStatus, 5000);
     });
 }
 
 checkMysqlServerStatus();
 
+const backup = () => {
+    return new Promise((resolve, reject) => {
+        let isReturned = false;
+        const process = child_process.exec(`${path.join(__dirname, "mysql\\server\\bin\\mysqldump.exe")} -u root --password=123456789 --port=33061 creative_site > "${path.join(__dirname, `backup\\mysql\\${moment(new Date()).format("yyyy-MM-DD_HH_mm_ss")}.sql`)}"`, (error, stdout, stderr) => {
+        });
+        process.on('close', (data) => {
+            if (!isReturned) {
+                isReturned = true;
+                resolve();
+            }
+        });
+        process.on('error', (data) => {
+            if (!isReturned) {
+                isReturned = true;
+                reject();
+            }
+        })
+    })
+}
+
 module.exports = {
     initIniFile,
     startServer,
-    killServer
+    killServer,
+    backup
 };

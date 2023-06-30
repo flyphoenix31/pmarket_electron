@@ -1,6 +1,8 @@
-// window.versions.onLog((event, value) => {
-//     console.log("main logg ==>", value);
-// })
+function humanFileSize(size, si = false) {
+    let unit = si ? 1000 : 1024;
+    var i = size == 0 ? 0 : Math.floor(Math.log(size) / Math.log(unit));
+    return (size / Math.pow(unit, i)).toFixed(2) * 1 + ' ' + ['', 'K', 'M', 'G', 'T'][i];
+}
 
 function mysqlActionEnable(enabled) {
     if (enabled) {
@@ -63,15 +65,15 @@ $(document).ready(function () {
     $("#webserver_start").click(() => {
         $("#webserver_status").html("Web server starting...");
         webserverActionEnable(false);
-        window.versions.sendEvent({ type: 'webserverStart', data: {port: Number($("#webserver_port").val())}});
+        window.versions.sendEvent({ type: 'webserverStart', data: { port: Number($("#webserver_port").val()) } });
     })
     $("#webserver_stop").click(() => {
         $("#webserver_status").html("Web server stopping...");
         webserverActionEnable(false);
         window.versions.sendEvent({ type: "webserverStop" });
     })
-    $("#hkcu_checkbox").change(function() {
-        window.versions.sendEvent({ type: "hkcu_status", data: this.checked});
+    $("#hkcu_checkbox").change(function () {
+        window.versions.sendEvent({ type: "hkcu_status", data: this.checked });
     });
 });
 
@@ -114,6 +116,14 @@ const winEventHandler = {
     },
     hkcu_status: (data) => {
         $("#hkcu_checkbox").prop('checked', data);
+    },
+    system_info: (data) => {
+        try {
+            $("#cpu_status").html(`${data.cpu.currentLoad.toFixed(2)}%`);
+            $("#memory_status").html(`${humanFileSize(data.memory.active)}B (${(data.memory.active / data.memory.total * 100).toFixed(2)}%)`);
+            $("#network_status").html(`send: ${humanFileSize(data.network.tx_sec)}bps, recv: ${humanFileSize(data.network.rx_sec)}bps`);
+        } catch (err) {
+        }
     }
 }
 

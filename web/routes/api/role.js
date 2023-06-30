@@ -3,6 +3,6 @@ const express = require('express');
 const router = express.Router();
 const { RoleController } = require('../../controller');
 
-router.get('/list', passport.authenticate('jwt', { session: false}), RoleController.list);
+router.get('/list', RoleController.list);
 
 module.exports = router;

@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
+    "auto": "electron . auto",
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "electron-packager . --out=release --overwrite"
@@ -23,6 +24,8 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
+    "node-network-bandwidth-monitor": "^1.0.3",
+    "node-schedule": "^2.1.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

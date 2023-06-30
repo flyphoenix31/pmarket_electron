@@ -9,7 +9,7 @@ const { escapeHTML } = require('../utils');
 exports.list = (req, res) => {
     mysql.select("roles").then(list => {
         return res.json({
-            status: 1,
+            status: 0,
             list
         })
     }).catch(err => {

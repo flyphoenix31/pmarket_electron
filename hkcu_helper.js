@@ -3,7 +3,7 @@ const path = require('path');
 const hkcu_path = 'HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run';
 const hkcu_key = 'pmarket_electron';
 // const command = `start ${path.join(__dirname, '..\\..\\pmarket-electron.exe')}`;
-const command = `"${path.join(__dirname, '..\\..\\pmarket-electron.exe')}"`;
+const command = `"${path.join(__dirname, '..\\..\\pmarket-electron.exe')}" auto`;
 
 exports.set = () => {
     return new Promise((resolve, reject) => {

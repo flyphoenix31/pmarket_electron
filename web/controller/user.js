@@ -1,5 +1,7 @@
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
@@ -21,7 +23,7 @@ exports.login = (req, res) => {
         bcrypt.compare(password, user.password).then(isMatched => {
             if (!isMatched) throw ('password not matched');
             const payload = { id: user.id };
-            const token = `Bearer ${jwt.sign(payload, 'secret', { expiresIn: 3600 })}`;
+            const token = `Bearer ${jwt.sign(payload, 'secret', { expiresIn: 36000 })}`;
             console.log(jwt.decode(token));
             return res.json({
                 status: 0,
@@ -46,13 +48,13 @@ exports.login = (req, res) => {
 
 exports.current = (req, res) => {
     res.json({
-        success: 0,
+        status: 0,
         user: req.user
     })
 }
 
 exports.list = (req, res) => {
-    User.listWithPagination({ deleted_at: null}, req.query.page, req.query.perPage).then(({list, page, perPage, totalPage}) => {
+    User.listWithPagination({ deleted_at: null }, req.query.page, req.query.perPage).then(({ list, page, perPage, totalPage }) => {
         return res.json({
             status: 0,
             users: list,
@@ -83,13 +85,14 @@ exports.jobUsers = (req, res) => {
 }
 
 const validate = (user, newUser = true) => {
-    const { name, email, password, phone, gender } = user;
+    const { name, email, password, phone, gender, role_id } = user;
     const errors = {};
     if (isEmpty(name)) errors.name = 'Name field is required';
     if (isEmpty(email)) errors.email = 'Email field is required';
     if (newUser && isEmpty(password)) errors.password = 'Password field is required';
     if (isEmpty(phone)) errors.phone = 'Phone field is required';
     if (isEmpty(gender)) errors.gender = 'Gender field is required';
+    if (role_id === undefined) errors.role_id = 'Role field is required';
     return {
         isValid: !Object.keys(errors).length,
         errors
@@ -137,6 +140,7 @@ exports.updatePassword = (req, res) => {
 }
 
 exports.update = (req, res) => {
+    console.log(req.body);
     const { isValid, errors } = validate(req.body, false);
     if (!isValid) {
         return res.json({
@@ -144,33 +148,34 @@ exports.update = (req, res) => {
             errors
         })
     }
-    let { id, name, email, phone, gender } = req.body;
+    let { id, name, email, phone, gender, bio, role_id } = req.body;
     id = escapeHTML(id);
     name = escapeHTML(name);
     email = escapeHTML(email);
     phone = escapeHTML(phone);
     gender = escapeHTML(gender);
+    bio = escapeHTML(bio);
+    role_id = escapeHTML(role_id);
 
-    mysql.select("users", { name, id: { neq: id } }).then(([user]) => {
-        if (user) {
+    mysql.select("users", { id }).then(([user]) => {
+        if (!user) {
             return res.json({
                 status: 1,
-                errors: { name: "Name already exists" }
+                message: "User doesn't exist"
             })
         }
-        mysql.select("users", { email, id: { neq: id } }).then(([user]) => {
-            if (user) {
-                return res.json({
-                    status: 1,
-                    errors: { email: "Email already exists" }
-                })
-            }
+        let fileName = null;
+        let uploadPath = null;
+        const saveUser = () => {
             const updateUser = {
                 name,
-                email,
                 phone,
                 gender,
+                bio, role_id,
                 updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
+            }
+            if (uploadPath) {
+                updateUser.avatar = filePath;
             }
             User.update({ id }, updateUser).then(() => {
                 res.json({
@@ -183,13 +188,30 @@ exports.update = (req, res) => {
                     message: 'Please try again later'
                 })
             })
-        }).catch(err => {
-            console.log(err);
-            return res.json({
-                status: 1,
-                message: "Please try again later"
+        }
+
+        if (req.files && Object.keys(req.files).length) {
+            const file = req.files.avatar;
+            let timestamp = new Date().getTime();
+            fileName = file.name;
+            uploadPath = path.join(__dirname, `..\\client\\uploads\\avatar\\${timestamp}`);
+            if (!fs.existsSync(uploadPath)) {
+                fs.mkdirSync(uploadPath);
+            }
+            uploadPath = path.join(__dirname, `..\\client\\uploads\\avatar\\${timestamp}\\${file.name}`);
+            filePath = `\\\\uploads\\\\avatar\\\\${timestamp}\\\\${file.name}`;
+            file.mv(uploadPath, function (err) {
+                if (err) {
+                    return res.json({
+                        status: 1,
+                        message: 'Please try again later'
+                    })
+                }
+                saveUser();
             })
-        })
+        } else {
+            saveUser();
+        }
     }).catch(err => {
         console.log(err);
         return res.json({
@@ -208,27 +230,30 @@ exports.new = (req, res) => {
         });
     }
 
-    let { name, email, password, phone, gender } = req.body;
+    let { name, email, password, phone, gender, bio, role_id } = req.body;
     name = escapeHTML(name);
     email = escapeHTML(email);
     phone = escapeHTML(phone);
-    gender = escapeHTML(gender)
+    gender = escapeHTML(gender);
+    bio = escapeHTML(bio);
+    role_id = escapeHTML(role_id);
 
-    User.findByName(name).then(user => {
-        if (user) {
+    User.findByEmail(email).then(user => {
+        if (user)
             return res.json({
                 status: 1,
-                errors: { name: 'Name already exists' }
-            })
-        }
-        User.findByEmail(email).then(user => {
-            if (user)
-                return res.json({
-                    status: 1,
-                    errors: { email: 'Email already exists' }
-                });
+                errors: { email: 'Email already exists' }
+            });
+
+        let fileName = null;
+        let uploadPath = null;
+
+        const addUser = () => {
             const newUser = {
-                name, email, password, phone, gender
+                name, email, password, phone, gender, bio, role_id
+            };
+            if (uploadPath) {
+                newUser.avatar = filePath;
             }
             bcrypt.hash(newUser.password, 0).then(hash => {
                 newUser.password = hash;
@@ -254,13 +279,29 @@ exports.new = (req, res) => {
                     message: "Please try again later."
                 })
             })
-        }).catch(err => {
-            console.log(err);
-            return res.json({
-                status: 1,
-                message: 'Please try again later'
+        }
+        if (req.files && Object.keys(req.files).length) {
+            const file = req.files.avatar;
+            let timestamp = new Date().getTime();
+            fileName = file.name;
+            uploadPath = path.join(__dirname, `..\\client\\uploads\\avatar\\${timestamp}`);
+            if (!fs.existsSync(uploadPath)) {
+                fs.mkdirSync(uploadPath);
+            }
+            uploadPath = path.join(__dirname, `..\\client\\uploads\\avatar\\${timestamp}\\${file.name}`);
+            filePath = `\\\\uploads\\\\avatar\\\\${timestamp}\\\\${file.name}`;
+            file.mv(uploadPath, function (err) {
+                if (err) {
+                    return res.json({
+                        status: 1,
+                        message: 'Please try again later'
+                    })
+                }
+                addUser();
             })
-        })
+        } else {
+            addUser();
+        }
     }).catch(err => {
         console.log(err);
         return res.json({

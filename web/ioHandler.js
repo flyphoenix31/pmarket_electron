@@ -6,7 +6,7 @@ const onConnect = (socket) => {
 
     socket.on('id', ({id}) => {
         console.log('id', id);
-        socket.id = id;
+        socket.userId = id;
     })
 
     socket.on("disconnect", () => {
@@ -18,7 +18,7 @@ const onConnect = (socket) => {
 
 const newMessage = (message) => {
     connections.forEach(connection => {
-        if (connection.id == message.from_user || connection.id == message.to_user) {
+        if (connection.userId == message.from_user || connection.userId == message.to_user) {
             connection.emit("newMessage", message);
         }
     })
@@ -28,8 +28,8 @@ const sendConnectionState = () => {
     const connectedUsers = [];
     try {
         connections.forEach(connection => {
-            if (connection.id)
-                connectedUsers.push(connection.id);
+            if (connection.userId)
+                connectedUsers.push(connection.userId);
         })
     } catch(err) {
     }
