@@ -119,7 +119,10 @@ const startServer = () => {
         killServer().then(() => {
             initIniFile().then(() => {
                 let isResolved = false;
-                const cmd = `"${path.join(mysqlPath, "server\\bin\\pmarket_mysqld.exe")}" --defaults-file="${path.join(mysqlPath, "data\\pmarket.ini")}"`;
+                let cmd = `"${path.join(mysqlPath, "server\\bin\\pmarket_mysqld.exe")}" --defaults-file="${path.join(mysqlPath, "data\\pmarket.ini")}"`;
+                // console.log(cmd);
+                // cmd = `"${mysqlPathFilter(path.join(mysqlPath, "server\\bin\\pmarket_mysqld.exe"))}" --defaults-file="${mysqlPathFilter(path.join(mysqlPath, "data\\pmarket.ini"))}"`;
+                // console.log(cmd);
                 // const cmd = `"${__dirname}\\mysql\\server\\bin\\pmarket_mysqld.exe\" --defaults-file="${__dirname}\\mysql\\data\\pmarket.ini"`;
                 global.sendLog(`starting server: ${cmd}`);
                 const process = child_process.exec(cmd, (error, stdout, stderr) => {
@@ -142,11 +145,11 @@ const startServer = () => {
                         setTimeout(() => resolve(), 5000);
                     }
                 });
-                // mysql_process.on("close", (number, signal) => console.log("close:", number, signal));
-                // mysql_process.on("disconnect", () => console.log("disconnect"));
-                // mysql_process.on("error", (err) => console.log("error:", err));
-                // mysql_process.on("exit", (number, signal) => console.log("exit:", number, signal));
-                // mysql_process.on("message", (message) => console.log("message:", message));
+                process.on("close", (number, signal) => console.log("close:", number, signal));
+                process.on("disconnect", () => console.log("disconnect"));
+                process.on("error", (err) => console.log("error:", err));
+                process.on("exit", (number, signal) => console.log("exit:", number, signal));
+                process.on("message", (message) => console.log("message:", message));
             })
         })
     })

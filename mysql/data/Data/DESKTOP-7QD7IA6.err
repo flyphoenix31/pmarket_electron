@@ -5009,3 +5009,169 @@ Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
 2023-06-29T20:05:44.280324Z 783 [Note] Aborted connection 783 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
 2023-06-29T23:09:29.303251Z 3094 [Note] Aborted connection 3094 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
 2023-06-29T23:09:29.303251Z 3092 [Note] Aborted connection 3092 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-01T09:43:15.441288Z 0 [ERROR] Cannot open Windows EventLog; check privileges, or start server with --log_syslog=0
+2023-07-01T09:43:15.441357Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 10700 ...
+2023-07-01T09:43:15.527863Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-07-01T09:43:15.528239Z 0 [Note] InnoDB: Uses event mutexes
+2023-07-01T09:43:15.528487Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-07-01T09:43:15.529061Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-07-01T09:43:15.529462Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-07-01T09:43:15.530366Z 0 [Note] InnoDB: Number of pools: 1
+2023-07-01T09:43:15.530766Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-07-01T09:43:15.533345Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-07-01T09:43:15.540032Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-07-01T09:43:15.739468Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-07-01T09:43:15.744662Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 4860442
+2023-07-01T09:43:15.745019Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 4860451
+2023-07-01T09:43:15.745450Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-07-01T09:43:15.745749Z 0 [Note] InnoDB: Starting crash recovery.
+2023-07-01T09:43:16.839685Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-07-01T09:43:16.840032Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-07-01T09:43:16.840504Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-07-01T09:43:17.025186Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-07-01T09:43:17.075882Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-07-01T09:43:17.076328Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-07-01T09:43:17.076889Z 0 [Note] InnoDB: Waiting for purge to start
+2023-07-01T09:43:17.157220Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 4860451
+2023-07-01T09:43:17.157803Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\blender\electron\mysql\data\Data\ib_buffer_pool
+2023-07-01T09:43:17.157887Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-07-01T09:43:17.308395Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230701  2:43:17
+2023-07-01T09:43:17.310099Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-07-01T09:43:17.310622Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-07-01T09:43:17.311074Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-07-01T09:43:17.311472Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-07-01T09:43:17.342721Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-07-01T09:43:17.343153Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-07-01T09:43:17.353783Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-07-01T09:43:17.378702Z 0 [Note] IPv6 is available.
+2023-07-01T09:43:17.378974Z 0 [Note]   - '::' resolves to '::';
+2023-07-01T09:43:17.379284Z 0 [Note] Server socket created on IP: '::'.
+2023-07-01T09:43:17.594141Z 0 [Note] Failed to start slave threads for channel ''
+2023-07-01T09:43:18.381719Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-07-01T09:43:18.382124Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-07-01T13:32:28.648746Z 3 [Note] Aborted connection 3 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-01T13:32:28.648787Z 4 [Note] Aborted connection 4 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-02T00:05:21.487596Z 0 [ERROR] Cannot open Windows EventLog; check privileges, or start server with --log_syslog=0
+2023-07-02T00:05:21.494925Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 16604 ...
+2023-07-02T00:05:21.656492Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-07-02T00:05:21.656870Z 0 [Note] InnoDB: Uses event mutexes
+2023-07-02T00:05:21.657101Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-07-02T00:05:21.657467Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-07-02T00:05:21.657758Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-07-02T00:05:21.658642Z 0 [Note] InnoDB: Number of pools: 1
+2023-07-02T00:05:21.658990Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-07-02T00:05:21.661353Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-07-02T00:05:21.667768Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-07-02T00:05:21.793648Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-07-02T00:05:21.953189Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 4860470
+2023-07-02T00:05:21.953564Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 4860479
+2023-07-02T00:05:21.953940Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-07-02T00:05:21.954238Z 0 [Note] InnoDB: Starting crash recovery.
+2023-07-02T00:05:23.064532Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-07-02T00:05:23.064885Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-07-02T00:05:23.065357Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-07-02T00:05:23.227891Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-07-02T00:05:23.251163Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-07-02T00:05:23.251609Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-07-02T00:05:23.252203Z 0 [Note] InnoDB: Waiting for purge to start
+2023-07-02T00:05:23.332367Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 4860479
+2023-07-02T00:05:23.332931Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\blender\electron\mysql\data\Data\ib_buffer_pool
+2023-07-02T00:05:23.332956Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-07-02T00:05:23.595696Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-07-02T00:05:23.596230Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-07-02T00:05:23.596690Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-07-02T00:05:23.597094Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-07-02T00:05:23.600002Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230701 17:05:23
+2023-07-02T00:05:23.625932Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-07-02T00:05:23.626338Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-07-02T00:05:23.642461Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-07-02T00:05:23.659526Z 0 [Note] IPv6 is available.
+2023-07-02T00:05:23.659749Z 0 [Note]   - '::' resolves to '::';
+2023-07-02T00:05:23.660049Z 0 [Note] Server socket created on IP: '::'.
+2023-07-02T00:05:24.052420Z 0 [Note] Failed to start slave threads for channel ''
+2023-07-02T00:05:25.007846Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-07-02T00:05:25.008243Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-07-02T04:23:03.111873Z 0 [ERROR] Cannot open Windows EventLog; check privileges, or start server with --log_syslog=0
+2023-07-02T04:23:03.111932Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 14284 ...
+2023-07-02T04:23:03.116233Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-07-02T04:23:03.116603Z 0 [Note] InnoDB: Uses event mutexes
+2023-07-02T04:23:03.116832Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-07-02T04:23:03.117195Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-07-02T04:23:03.117483Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-07-02T04:23:03.118267Z 0 [Note] InnoDB: Number of pools: 1
+2023-07-02T04:23:03.118646Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-07-02T04:23:03.121022Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-07-02T04:23:03.129871Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-07-02T04:23:03.204965Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-07-02T04:23:03.209768Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 4860498
+2023-07-02T04:23:03.210127Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 4860507
+2023-07-02T04:23:03.210494Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-07-02T04:23:03.210785Z 0 [Note] InnoDB: Starting crash recovery.
+2023-07-02T04:23:03.824692Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-07-02T04:23:03.825047Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-07-02T04:23:03.825680Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-07-02T04:23:03.956636Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-07-02T04:23:03.979741Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-07-02T04:23:03.980390Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-07-02T04:23:03.980969Z 0 [Note] InnoDB: Waiting for purge to start
+2023-07-02T04:23:04.035816Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 4860507
+2023-07-02T04:23:04.036407Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\blender\electron\mysql\data\Data\ib_buffer_pool
+2023-07-02T04:23:04.036445Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-07-02T04:23:04.183617Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-07-02T04:23:04.184145Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-07-02T04:23:04.184595Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-07-02T04:23:04.184997Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-07-02T04:23:04.186596Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-07-02T04:23:04.186979Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-07-02T04:23:04.187660Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-07-02T04:23:04.211340Z 0 [Note] IPv6 is available.
+2023-07-02T04:23:04.211568Z 0 [Note]   - '::' resolves to '::';
+2023-07-02T04:23:04.211862Z 0 [Note] Server socket created on IP: '::'.
+2023-07-02T04:23:04.224530Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230701 21:23:04
+2023-07-02T04:23:04.240206Z 0 [Note] Failed to start slave threads for channel ''
+2023-07-02T04:23:04.252206Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-07-02T04:23:04.252599Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-07-02T04:34:00.408601Z 0 [ERROR] Cannot open Windows EventLog; check privileges, or start server with --log_syslog=0
+2023-07-02T04:34:00.408683Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 14880 ...
+2023-07-02T04:34:00.413399Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-07-02T04:34:00.413797Z 0 [Note] InnoDB: Uses event mutexes
+2023-07-02T04:34:00.414034Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-07-02T04:34:00.414410Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-07-02T04:34:00.414725Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-07-02T04:34:00.415596Z 0 [Note] InnoDB: Number of pools: 1
+2023-07-02T04:34:00.415955Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-07-02T04:34:00.418581Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-07-02T04:34:00.425214Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-07-02T04:34:00.473985Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-07-02T04:34:00.491498Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 4860535
+2023-07-02T04:34:00.491867Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 4860544
+2023-07-02T04:34:00.492242Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-07-02T04:34:00.492535Z 0 [Note] InnoDB: Starting crash recovery.
+2023-07-02T04:34:00.958576Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-07-02T04:34:00.958932Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-07-02T04:34:00.959417Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-07-02T04:34:01.113441Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-07-02T04:34:01.146298Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-07-02T04:34:01.146748Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-07-02T04:34:01.147293Z 0 [Note] InnoDB: Waiting for purge to start
+2023-07-02T04:34:01.205595Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 4860544
+2023-07-02T04:34:01.206156Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\blender\electron\mysql\data\Data\ib_buffer_pool
+2023-07-02T04:34:01.206220Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-07-02T04:34:01.294405Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-07-02T04:34:01.294938Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-07-02T04:34:01.295397Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-07-02T04:34:01.295796Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-07-02T04:34:01.297430Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-07-02T04:34:01.297808Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-07-02T04:34:01.298430Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-07-02T04:34:01.319024Z 0 [Note] IPv6 is available.
+2023-07-02T04:34:01.319250Z 0 [Note]   - '::' resolves to '::';
+2023-07-02T04:34:01.319546Z 0 [Note] Server socket created on IP: '::'.
+2023-07-02T04:34:01.398064Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230701 21:34:01
+2023-07-02T04:34:01.484189Z 0 [Note] Failed to start slave threads for channel ''
+2023-07-02T04:34:01.495430Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-07-02T04:34:01.495804Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
