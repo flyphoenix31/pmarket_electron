@@ -42,10 +42,21 @@ const sendConnectionState = () => {
     }
 }
 
+const sendNotification = (userIds, notification) => {
+    userIds.forEach(userId => {
+        connections.forEach(connection => {
+            if (connection.userId == userId) {
+                connection.emit('notification', notification);
+            }
+        })
+    })
+}
+
 setInterval(sendConnectionState, 5000);
 
 module.exports = {
     connections,
     onConnect,
-    newMessage
+    newMessage,
+    sendNotification
 }

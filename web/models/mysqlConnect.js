@@ -71,6 +71,9 @@ const insertManyQuery = (table, params) => {
 const insertMany = (table, params) => {
     return new Promise((resolve, reject) => {
         let insertQuery = insertManyQuery(table, params);
+        if (insertQuery == '') {
+            return resolve();
+        }
         query(insertQuery).then(result => {
             resolve(result);
         }).catch(err => {

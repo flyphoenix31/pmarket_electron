@@ -1,4 +1,5 @@
 const moment = require('moment');
+const Setting = require('./Setting');
 const mysql = require('./mysqlConnect');
 const { getProperPagination } = require('../utils');
 
@@ -85,15 +86,30 @@ exports.store = (data, isNew = true) => {
             })
         }
         else {
-            mysql.insertOne("invoice_master", invoice).then((invoice) => {
+            Promise.all([
+                mysql.insertOne("invoice_master", invoice),
+                Setting.getBank()
+            ]).then(([invoice, bank]) => {
                 newItems.forEach(item => {
                     item.invoice_id = invoice.id
                 });
-                mysql.insertMany("invoice_items", newItems).then(() => {
+                Promise.all([
+                    mysql.insertMany("invoice_items", newItems),
+                    mysql.insertOne("invoice_bank_details", {
+                        created_at: currentDateStr,
+                        updated_at: currentDateStr,
+                        invoice_id: invoice.id,
+                        account_number: bank.account_number,
+                        bank_name: bank.bank_name,
+                        bank_code: bank.bank_code,
+                        bank_country: bank.bank_country
+                    })
+                ]).then(([insertManyResult, bank_detail]) => {
                     mysql.select("invoice_items", { invoice_id: invoice.id }).then(items => {
                         resolve({
                             invoice,
-                            items
+                            items,
+                            bank_detail
                         })
                     }).catch(err => {
                         reject(err);

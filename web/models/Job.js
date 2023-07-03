@@ -1,11 +1,24 @@
 const { getProperPagination } = require('../utils');
 const mysql = require('./mysqlConnect');
 
-exports.listWithPagination = ({cond, page: page_, perPage: perPage_, extra}) => {
+const STATUS = {
+    ACTIVE: 1,
+    INACTIVE: 2,
+    CLOSED: 3
+}
+exports.STATUS = STATUS;
+
+const TYPE = {
+    BY_ROLE: 1,
+    BY_USERS: 2
+}
+exports.TYPE = TYPE;
+
+exports.listWithPagination = ({ cond, page: page_, perPage: perPage_, extra }) => {
     return new Promise((resolve, reject) => {
         mysql.select("freelance_jobs", null, { isGetCount: true }).then(totalCount => {
             let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);
-            mysql.select("freelance_jobs", null, { offset: (page - 1) * perPage, limit: perPage, ...(extra??{}) }).then(list => {
+            mysql.select("freelance_jobs", null, { offset: (page - 1) * perPage, limit: perPage, ...(extra ?? {}) }).then(list => {
                 resolve({
                     list,
                     page,
@@ -30,6 +43,16 @@ exports.findOne = (id) => {
             return resolve({
                 job, categories, jobUsers
             });
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
+exports.closeJob = (id) => {
+    return new Promise((resolve, reject) => {
+        mysql.updateOne("freelance_jobs", { id }, { status_id: STATUS.CLOSED }).then(job => {
+            resolve(job);
         }).catch(err => {
             reject(err);
         })

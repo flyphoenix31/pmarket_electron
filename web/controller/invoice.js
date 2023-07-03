@@ -8,11 +8,12 @@ const itemValidate = (invoice_item) => {
     const { description, item_notes, unit_price, quantity, has_tax } = invoice_item;
     const errors = {};
     if (isEmpty(description)) errors.description = "Description is required";
-    if (isEmpty(item_notes)) errors.item_notes = "Additional details is required";
-    if (Number.isNaN(Number(unit_price)) || Number(unit_price) < 0) {
+    // if (isEmpty(item_notes)) errors.item_notes = "Additional details is required";
+    if (isEmpty(item_notes)) invoice_item.item_notes = "";
+    if (Number.isNaN(Number(unit_price)) || Number(unit_price) <= 0) {
         errors.unit_price = "Price is required";
     }
-    if (!Number.isInteger(Number(quantity)) || Number(quantity) < 0) {
+    if (!Number.isInteger(Number(quantity)) || Number(quantity) <= 0) {
         errors.quantity = "Quantity is required";
     }
     if (!Number.isInteger(Number(has_tax)) || (Number(has_tax) != 0 && Number(has_tax) != 1)) {
@@ -53,14 +54,14 @@ const validate = (invoice, newInvoice = true) => {
         if (Number.isNaN(Number(tax_value)) || Number(tax_value > 100) || Number(tax_value < 0)) {
             errors.tax_value = "Tax value is invalid";
         }
-    } else if (tax_type_id !== undefined && tax_type_id !== null) {
+    } else if (Number(tax_type_id)) {
         errors.tax_type_id = "Tax type is invalid";
     }
     if (discount_type_id == 1 || discount_type_id == 2) {
         if (Number.isNaN(Number(discount_value)) || Number(discount_value) < 0) {
             errors.discount_value = "Discount value is invalid";
         }
-    } else if (discount_type_id !== undefined && tax_type_id !== null) {
+    } else if (Number(discount_type_id)) {
         errors.discount_type_id = "Discount Type is invalid";
     }
 
@@ -75,7 +76,7 @@ const validate = (invoice, newInvoice = true) => {
                 itemErrors.push(null);
             } else {
                 itemsValid = false;
-                itemErrors = errors;
+                itemErrors.push(errors);
             }
         });
     }
@@ -107,11 +108,12 @@ exports.new = (req, res) => {
                 }
             })
         }
-        Invoice.store({ ...req.body, user_id: req.user.id }).then(({ invoice, items }) => {
+        Invoice.store({ ...req.body, user_id: req.user.id }).then(({ invoice, items, bank_detail }) => {
             return res.json({
                 status: 0,
                 invoice,
-                items
+                items,
+                bank_detail
             })
         }).catch(err => {
             console.log(err);

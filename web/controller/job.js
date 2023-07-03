@@ -1,8 +1,9 @@
+const moment = require('moment');
 const validator = require('validator');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
 const Job = require('../models/Job');
-const moment = require('moment');
+const Notification = require('../models/Notification')
 const { escapeHTML } = require('../utils');
 
 exports.list = (req, res) => {
@@ -67,8 +68,9 @@ const validate = (job, isNew = true) => {
     if (isEmpty(full_description)) errors.full_description = 'Full description field is required';
     if (job_nature === undefined) errors.job_nature = 'Job nature field is required';
     // if (isEmpty(tags)) errors.tags = 'Tags field is required';
-    if (false && isNew && isEmpty(jobUsers)) errors.jobUsers = "Designers field is required";
-    // if (isEmpty(categories)) errors.categories = "Category field is required";
+    // if (false && isNew && isEmpty(jobUsers)) errors.jobUsers = "Designers field is required";
+    if (isEmpty(categories)) errors.categories = "Category field is required";
+    else if (!Array.isArray(categories)) errors.categories = "Category is invalid";
     if (!delivery_day) errors.delivery_day = "Delivery Day field is required";
     return {
         isValid: !Object.keys(errors).length,
@@ -85,7 +87,9 @@ exports.new = (req, res) => {
         });
     }
 
-    let { title, short_description, full_description, job_nature, tags, is_featured, is_urgent, type_id, budget, jobUsers, categories, delivery_day } = req.body;
+    const currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
+
+    let { title, short_description, full_description, job_nature, tags, is_featured, is_urgent, budget, categories, delivery_day, role, users } = req.body;
     title = escapeHTML(title);
     short_description = escapeHTML(short_description);
     full_description = escapeHTML(full_description);
@@ -93,10 +97,10 @@ exports.new = (req, res) => {
     tags = escapeHTML(tags);
     is_featured = escapeHTML(is_featured);
     is_urgent = escapeHTML(is_urgent);
-    type_id = escapeHTML(type_id);
     budget = escapeHTML(budget);
-    jobUsers = escapeHTML(jobUsers);
+    users = escapeHTML(users);
     categories = escapeHTML(categories);
+    role = escapeHTML(role);
 
     const newJob = {
         title,
@@ -106,30 +110,47 @@ exports.new = (req, res) => {
         tags,
         is_featured,
         is_urgent,
-        // type_id,
         budget,
         delivery_day,
         status_id: 1,
-        created_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss"),
-        updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
+        created_at: currentDateStr,
+        updated_at: currentDateStr
     }
+    if (role) {
+        newJob.type_id = 1;
+    } else if (users && Array.isArray(users) && users.length) {
+        newJob.type_id = 2;
+    }
+
     mysql.insertOne("freelance_jobs", newJob).then(job => {
+        const promiseArray = [];
         const newCategories = [];
+        const newJobDistributions = [];
         categories.forEach(item => {
             newCategories.push({ category_id: item, job_id: job.id });
         });
-        const newJobUsers = [];
-        jobUsers.forEach(item => newJobUsers.push({
-            created_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss"),
-            updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss"),
-            job_id: job.id,
-            user_id: item,
-            status: 1
-        }))
-        Promise.all([
-            mysql.insertMany("job_users", jobUsers),
-            mysql.insertMany("job_category", newCategories)
-        ]).then(() => {
+        if (role) {
+            newJobDistributions.push({
+                created_at: currentDateStr,
+                updated_at: currentDateStr,
+                job_id: job.id,
+                role_id: role
+            });
+            promiseArray.push(Notification.generateJobRoleNotification(role, job));
+        } else if (users && Array.isArray(users) && users.length) {
+            users.forEach(user_id => {
+                newJobDistributions.push({
+                    created_at: currentDateStr,
+                    updated_at: currentDateStr,
+                    job_id: job.id,
+                    user_id: user_id
+                })
+            })
+            promiseArray.push(Notification.generateJobUserNotification(users, job));
+        }
+        promiseArray.push(mysql.insertMany("job_distribution_list", newJobDistributions));
+        promiseArray.push(mysql.insertMany("job_category", newCategories));
+        Promise.all(promiseArray).then(() => {
             return res.json({
                 status: 0
             })
@@ -158,7 +179,7 @@ exports.update = (req, res) => {
         });
     }
 
-    let { id, title, short_description, full_description, job_nature, tags, is_featured, is_urgent, type_id, budget, categories, delivery_day, status_id } = req.body;
+    let { id, title, short_description, full_description, job_nature, tags, is_featured, is_urgent, budget, categories, delivery_day } = req.body;
     id = escapeHTML(id);
     title = escapeHTML(title);
     short_description = escapeHTML(short_description);
@@ -167,9 +188,7 @@ exports.update = (req, res) => {
     tags = escapeHTML(tags);
     is_featured = escapeHTML(is_featured);
     is_urgent = escapeHTML(is_urgent);
-    type_id = escapeHTML(type_id);
     budget = escapeHTML(budget);
-    // jobUsers = escapeHTML(jobUsers);
     categories = escapeHTML(categories);
 
     const updatedJob = {
@@ -180,12 +199,10 @@ exports.update = (req, res) => {
         tags,
         is_featured,
         is_urgent,
-        // type_id,
         budget,
         delivery_day,
         updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
     };
-    let newCategories = [];
     let newCategorySQL = '';
     categories.forEach(item => {
         newCategorySQL += mysql.getInsertQuery("job_category", { category_id: item, job_id: id });
@@ -202,6 +219,35 @@ exports.update = (req, res) => {
         return res.json({
             status: 1,
             message: 'Please try again later.'
+        })
+    })
+}
+
+exports.closeJob = (req, res) => {
+    if (!req.body.id) {
+        return res.json({
+            status: 1,
+            message: "Job not found"
+        })
+    }
+    req.body.id = escapeHTML(req.body.id);
+    Job.closeJob(req.body.id).then((job) => {
+        if (!job) {
+            return res.json({
+                status: 1,
+                message: "Job not found"
+            })
+        }
+        return res.json({
+            status: 1,
+            job,
+            message: "Job closed successfuly"
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: "Please try again later."
         })
     })
 }

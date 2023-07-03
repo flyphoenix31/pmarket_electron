@@ -20,3 +20,18 @@ exports.list = (req, res) => {
         })
     })
 }
+
+exports.developerList = (req, res) => {
+    mysql.select("roles", {type: 2}).then(list => {
+        return res.json({
+            status: 0,
+            list
+        })
+    }).catch(err => {
+        console.log(err);
+        return res.json({
+            status: 1,
+            message: "Please try again later."
+        })
+    })
+}
