@@ -60,12 +60,17 @@ const insertOne = (table, params) => {
     });
 }
 
+const insertManyQuery = (table, params) => {
+    let insertQuery = '';
+    params.forEach(param => {
+        insertQuery += getInsertQuery(table, param);
+    })
+    return insertQuery;
+}
+
 const insertMany = (table, params) => {
     return new Promise((resolve, reject) => {
-        let insertQuery = '';
-        params.forEach(param => {
-            insertQuery += getInsertQuery(table, param);
-        })
+        let insertQuery = insertManyQuery(table, params);
         query(insertQuery).then(result => {
             resolve(result);
         }).catch(err => {
@@ -120,23 +125,61 @@ const generateCondStr = (conds, statement = 'and') => {
     return str;
 }
 
+const updateQuery = (table, conds, params) => {
+    let findQuery = ' where ';
+    findQuery += generateCondStr(conds);
+
+    let setQuery = ' set';
+    Object.keys(params).forEach((key, index) => {
+        if (index) {
+            setQuery += ' ,';
+        }
+        if (typeof (params[key]) == 'string')
+            setQuery += ` ${key}='${params[key]}'`;
+        else
+            setQuery += ` ${key}=${params[key]}`;
+    });
+
+    let updateQuery = `update ${table} ${setQuery} ${findQuery};`;
+    return updateQuery;
+}
+
 const update = (table, conds, params) => {
     return new Promise((resolve, reject) => {
-        let findQuery = ' where ';
-        findQuery += generateCondStr(conds);
+        let queryStr = updateQuery(table, conds, params);
+        query(queryStr).then(result => {
+            resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
 
-        let setQuery = ' set';
-        Object.keys(params).forEach((key, index) => {
-            if (index) {
-                setQuery += ' ,';
-            }
-            if (typeof (params[key]) == 'string')
-                setQuery += ` ${key}='${params[key]}'`;
-            else
-                setQuery += ` ${key}=${params[key]}`;
+const updateOne = (table, conds, params) => {
+    return new Promise((resolve, reject) => {
+        update(table, conds, params).then(() => {
+            select(table, conds).then(([value]) => {
+                resolve(value);
+            }).catch(err => {
+                reject(err);
+            })
+        }).catch(err => {
+            reject(err);
         });
+    })
+}
 
-        let updateQuery = `update ${table}` + setQuery + findQuery;
+const deleteManyQuery = (table, conds) => {
+    let findQuery = ' where ';
+    findQuery += generateCondStr(conds);
+
+    let updateQuery = `delete from ${table} ${findQuery};`;
+    return updateQuery;
+}
+
+const deleteMany = (table, conds) => {
+    return new Promise((resolve, reject) => {
+        let updateQuery = deleteManyQuery(table, conds);
         query(updateQuery).then(result => {
             resolve();
         }).catch(err => {
@@ -145,33 +188,38 @@ const update = (table, conds, params) => {
     })
 }
 
+const selectQuery = (table, conds, extra = {}) => {
+    let findQuery = '';
+    if (conds) {
+        findQuery = ' where';
+        findQuery += generateCondStr(conds);
+    }
+    console.log(generateCondStr(conds));
+    let extraQuery = '';
+    if (extra.orderBy) {
+        extraQuery = 'order by ';
+        Object.keys(extra.orderBy).forEach((key, index) => {
+            if (index) extraQuery += ' ,';
+            extraQuery += `${key} ${extra.orderBy[key]}`;
+        })
+    }
+    if (extra.limit) {
+        extraQuery += ` limit ${extra.limit}`
+    }
+    if (extra.offset) {
+        extraQuery += ` offset ${extra.offset}`
+    }
+    let selectQuery = `select *`;
+    if (extra.isGetCount) {
+        selectQuery = `select count(*) cnt`;
+    }
+    let query = `${selectQuery} from ${table} ${findQuery} ${extraQuery};`;
+    return query;
+}
+
 const select = (table, conds, extra = {}) => {
     return new Promise((resolve, reject) => {
-        let findQuery = '';
-        if (conds) {
-            findQuery = ' where';
-            findQuery += generateCondStr(conds);
-        }
-        console.log(generateCondStr(conds));
-        let extraQuery = '';
-        if (extra.orderBy) {
-            extraQuery = 'order by ';
-            Object.keys(extra.orderBy).forEach((key, index) => {
-                if (index) extraQuery += ' ,';
-                extraQuery += `${key} ${extra.orderBy[key]}`;
-            })
-        }
-        if (extra.limit) {
-            extraQuery += ` limit ${extra.limit}`
-        }
-        if (extra.offset) {
-            extraQuery += ` offset ${extra.offset}`
-        }
-        let selectQuery = `select *`;
-        if (extra.isGetCount) {
-            selectQuery = `select count(*) cnt`;
-        }
-        query(`${selectQuery} from ${table} ${findQuery} ${extraQuery}`).then(result => {
+        query(selectQuery(table, conds, extra)).then(result => {
             if (extra.isGetCount) {
                 return resolve(result[0].cnt);
             }
@@ -182,4 +230,4 @@ const select = (table, conds, extra = {}) => {
     })
 }
 
-module.exports = { query, select, getInsertQuery, insertOne, insertMany, update };
+module.exports = { query, selectQuery, select, getInsertQuery, insertOne, insertManyQuery, insertMany, updateQuery, update, updateOne, deleteManyQuery, deleteMany };

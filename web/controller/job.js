@@ -183,7 +183,6 @@ exports.update = (req, res) => {
         // type_id,
         budget,
         delivery_day,
-        status_id,
         updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
     };
     let newCategories = [];

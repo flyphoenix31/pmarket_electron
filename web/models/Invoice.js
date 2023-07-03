@@ -1,4 +1,113 @@
+const moment = require('moment');
 const mysql = require('./mysqlConnect');
+const { getProperPagination } = require('../utils');
+
+exports.store = (data, isNew = true) => {
+    return new Promise((resolve, reject) => {
+        let currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
+        let { id, name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, items, tax_type_id, tax_value, discount_type_id, discount_value, user_id } = data;
+        let invoice = {
+            name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, user_id,
+            status_id: 1,
+            // created_at: currentDateStr,
+            updated_at: currentDateStr
+        };
+        if (isNew) {
+            invoice.created_at = currentDateStr;
+        }
+        if (tax_type_id !== undefined && tax_type_id !== null) {
+            invoice.tax_type_id = tax_type_id;
+            invoice.tax_value = tax_value;
+        }
+        if (discount_type_id !== undefined && discount_type_id !== null) {
+            invoice.discount_type_id = discount_type_id;
+            invoice.discount_value = discount_value;
+        }
+
+        let sub_total = 0,
+            grand_total = 0,
+            total_tax = 0,
+            total_discount = 0;
+
+        let newItems = [];
+        items.forEach(item => {
+            const newItem = {
+                description: item.description,
+                item_notes: item.item_notes,
+                unit_price: Number(item.unit_price),
+                quantity: Number(item.quantity),
+                sub_total: Number(item.unit_price) * Number(item.quantity),
+                has_tax: Number(item.has_tax),
+                created_at: currentDateStr,
+                updated_at: currentDateStr
+            };
+            newItems.push(newItem);
+            sub_total += newItem.sub_total;
+            if (invoice.tax_type_id !== undefined && invoice.tax_type_id !== null) {
+                if (newItem.has_tax || invoice.tax_type_id == 2) {
+                    total_tax += newItem.sub_total * invoice.tax_value / 100;
+                }
+            }
+        });
+
+        if (discount_type_id !== undefined && discount_type_id !== null) {
+            if (discount_type_id == 2)
+                total_discount = sub_total * invoice.discount_value / 100;
+            else
+                total_discount = invoice.discount_value
+        }
+        grand_total = sub_total + total_tax - total_discount;
+
+        invoice.sub_total = sub_total;
+        invoice.grand_total = grand_total;
+        invoice.total_tax = total_tax;
+        invoice.total_discount = total_discount;
+
+        if (!isNew) {
+            newItems.forEach(item => {
+                item.invoice_id = id
+            });
+            let sql = `
+                ${mysql.updateQuery("invoice_master", { id }, invoice)}
+                ${mysql.selectQuery("invoice_master", { id })}
+                ${mysql.deleteManyQuery("invoice_items", { invoice_id: id })}
+                ${mysql.insertManyQuery("invoice_items", newItems)}
+                ${mysql.selectQuery("invoice_items", { invoice_id: id })}
+            `;
+
+            mysql.query(sql).then(([invoiceUpdateResult, [invoice], deleteItemsResult, insertItemsResult, items]) => {
+                resolve({
+                    invoice,
+                    items
+                })
+            }).catch(err => {
+                reject(err);
+            })
+        }
+        else {
+            mysql.insertOne("invoice_master", invoice).then((invoice) => {
+                newItems.forEach(item => {
+                    item.invoice_id = invoice.id
+                });
+                mysql.insertMany("invoice_items", newItems).then(() => {
+                    mysql.select("invoice_items", { invoice_id: invoice.id }).then(items => {
+                        resolve({
+                            invoice,
+                            items
+                        })
+                    }).catch(err => {
+                        reject(err);
+                    })
+                }).catch(err => {
+                    reject(err);
+                })
+            }).catch(err => {
+                reject(err);
+            })
+        }
+    })
+}
+
 exports.list = (filter) => {
     return new Promise((resolve, reject) => {
         mysql.query(
@@ -17,6 +126,40 @@ exports.list = (filter) => {
             left join invoice_statuses as s on s.id = i.status_id`
         ).then(result => {
             resolve(result);
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
+exports.listWithPagination = (cond, page_ = 1, perPage_ = 10) => {
+    return new Promise((resolve, reject) => {
+        mysql.select("invoice_master", null, { isGetCount: true }).then(totalCount => {
+            let {page, perPage, totalPage} = getProperPagination(page_, perPage_, totalCount);
+            mysql.query(
+                `select i.*,
+                    u.name as user_name,
+                    u.email as user_email,
+                    u.status_id as user_status_id,
+                    u.username as user_username,
+                    u.phone as user_phone,
+                    u.work_status as user_work_status,
+                    s.name as status_name,
+                    s.display_name as status_display_name,
+                    s.color as status_color
+                from invoice_master as i 
+                left join users as u on u.id = i.user_id 
+                left join invoice_statuses as s on s.id = i.status_id order by i.id desc limit ${perPage} offset ${perPage * (page - 1)};`
+            ).then(list => {
+                resolve({
+                    list,
+                    page,
+                    perPage,
+                    totalPage
+                });
+            }).catch(err => {
+                reject(err);
+            });
         }).catch(err => {
             reject(err);
         })

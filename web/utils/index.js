@@ -15,5 +15,5 @@ exports.getProperPagination = (page, perPage, totalCount) => {
     if (perPage < 1) perPage = 10;
     let totalPage = Math.ceil(totalCount / perPage);
     if (totalPage < page) page = totalPage;
-    return {page, perPage, totalCount};
+    return {page, perPage, totalPage};
 }
