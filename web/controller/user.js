@@ -6,13 +6,10 @@ const jwt = require('jsonwebtoken');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
 const User = require('../models/User');
-const moment = require('moment');
-const { escapeHTML } = require('../utils');
-const { escape } = require('mysql');
+const { getCurrentFormatedDate } = require('../utils');
 
 exports.login = (req, res) => {
     let { email, password } = req.body;
-    email = escapeHTML(email);
     mysql.select("users", { email, deleted_at: null }).then(([user]) => {
         if (!user) {
             return res.json({
@@ -118,7 +115,7 @@ exports.updatePassword = (req, res) => {
     if (isEmpty(password)) password = "123456789";
     bcrypt.hash(password, 0).then(hash => {
         password = hash;
-        User.update({ id }, { password, updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss") }).then(() => {
+        User.update({ id }, { password, updated_at: getCurrentFormatedDate() }).then(() => {
             return res.json({
                 status: 0,
                 message: "Succeed"
@@ -140,7 +137,6 @@ exports.updatePassword = (req, res) => {
 }
 
 exports.update = (req, res) => {
-    console.log(req.body);
     const { isValid, errors } = validate(req.body, false);
     if (!isValid) {
         return res.json({
@@ -149,13 +145,6 @@ exports.update = (req, res) => {
         })
     }
     let { id, name, email, phone, gender, bio, role_id } = req.body;
-    id = escapeHTML(id);
-    name = escapeHTML(name);
-    email = escapeHTML(email);
-    phone = escapeHTML(phone);
-    gender = escapeHTML(gender);
-    bio = escapeHTML(bio);
-    role_id = escapeHTML(role_id);
 
     mysql.select("users", { id }).then(([user]) => {
         if (!user) {
@@ -172,7 +161,7 @@ exports.update = (req, res) => {
                 phone,
                 gender,
                 bio, role_id,
-                updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
+                updated_at: getCurrentFormatedDate()
             }
             if (uploadPath) {
                 updateUser.avatar = filePath;
@@ -231,12 +220,6 @@ exports.new = (req, res) => {
     }
 
     let { name, email, password, phone, gender, bio, role_id } = req.body;
-    name = escapeHTML(name);
-    email = escapeHTML(email);
-    phone = escapeHTML(phone);
-    gender = escapeHTML(gender);
-    bio = escapeHTML(bio);
-    role_id = escapeHTML(role_id);
 
     User.findByEmail(email).then(user => {
         if (user)
@@ -257,7 +240,7 @@ exports.new = (req, res) => {
             }
             bcrypt.hash(newUser.password, 0).then(hash => {
                 newUser.password = hash;
-                newUser.created_at = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
+                newUser.created_at = getCurrentFormatedDate();
                 newUser.updated_at = newUser.created_at;
                 newUser.work_status = 0;
                 User.new(newUser).then(user => {

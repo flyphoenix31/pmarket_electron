@@ -1,12 +1,12 @@
-const moment = require('moment');
 const MailedQuotation = require('../models/MailedQuotation');
 const isEmpty = require('../utils/isEmpty');
 const validator = require('validator')
 const mysql = require('../models/mysqlConnect');
 
 const validate = (quotation, newQuotation = true) => {
-    const { subject, mail_content, to_email } = quotation;
+    const { to_name, subject, mail_content, to_email } = quotation;
     const errors = {};
+    if (isEmpty(to_name)) errors.subject = "Subject field is required";
     if (isEmpty(subject)) errors.subject = "Subject field is required";
     if (isEmpty(mail_content)) errors.mail_content = "Mail content is required";
     if (isEmpty(to_email)) errors.to_email = "To email is required";
@@ -31,6 +31,8 @@ exports.new = (req, res) => {
     mysql.select("invoice_master", { invoice_number: req.body.invoice }).then(([invoice]) => {
         if (invoice) {
             req.body.invoice_id = invoice.id
+        } else {
+            req.body.invoice_id = undefined;
         }
         MailedQuotation.store({ ...req.body, user_id: req.user.id }, true).then(quotation => {
             res.json({
@@ -72,6 +74,8 @@ exports.update = (req, res) => {
     mysql.select("invoice_master", { invoice_number: req.body.invoice }).then(([invoice]) => {
         if (invoice) {
             req.body.invoice_id = invoice.id
+        } else {
+            req.body.invoice_id = undefined;
         }
         MailedQuotation.store({ ...req.body, user_id: req.user.id }, false).then(quotation => {
             res.json({

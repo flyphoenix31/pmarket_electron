@@ -1,20 +1,17 @@
-const moment = require('moment');
 const Setting = require('./Setting');
 const mysql = require('./mysqlConnect');
-const { getProperPagination } = require('../utils');
+const { getProperPagination, getCurrentFormatedDate } = require('../utils');
 
 exports.store = (data, isNew = true) => {
     return new Promise((resolve, reject) => {
-        let currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
         let { id, name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, items, tax_type_id, tax_value, discount_type_id, discount_value, user_id } = data;
         let invoice = {
             name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, user_id,
             status_id: 1,
-            // created_at: currentDateStr,
-            updated_at: currentDateStr
+            updated_at: getCurrentFormatedDate()
         };
         if (isNew) {
-            invoice.created_at = currentDateStr;
+            invoice.created_at = getCurrentFormatedDate();
         }
         if (tax_type_id !== undefined && tax_type_id !== null) {
             invoice.tax_type_id = tax_type_id;
@@ -39,8 +36,8 @@ exports.store = (data, isNew = true) => {
                 quantity: Number(item.quantity),
                 sub_total: Number(item.unit_price) * Number(item.quantity),
                 has_tax: Number(item.has_tax),
-                created_at: currentDateStr,
-                updated_at: currentDateStr
+                created_at: getCurrentFormatedDate(),
+                updated_at: getCurrentFormatedDate()
             };
             newItems.push(newItem);
             sub_total += newItem.sub_total;
@@ -96,8 +93,8 @@ exports.store = (data, isNew = true) => {
                 Promise.all([
                     mysql.insertMany("invoice_items", newItems),
                     mysql.insertOne("invoice_bank_details", {
-                        created_at: currentDateStr,
-                        updated_at: currentDateStr,
+                        created_at: getCurrentFormatedDate(),
+                        updated_at: getCurrentFormatedDate(),
                         invoice_id: invoice.id,
                         account_number: bank.account_number,
                         bank_name: bank.bank_name,

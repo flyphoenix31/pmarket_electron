@@ -1,12 +1,11 @@
 const fs = require('fs');
-const moment = require('moment');
 const path = require('path');
 
 const ioHandler = require('../ioHandler');
 
 const Message = require('../models/Message');
 const mysql = require('../models/mysqlConnect');
-const { escapeHTML } = require('../utils');
+const { getCurrentFormatedDate } = require('../utils');
 exports.contacts = (req, res) => {
     mysql.query(`select *, (select id from messages where users.id=messages.from_user or users.id=messages.to_user order by messages.id desc limit 1) messageId from users where users.id != ${req.user.id} order by messageId desc`).then(contacts => {
         res.json({
@@ -82,10 +81,10 @@ exports.sendMessage = (req, res) => {
         const newMessage = {
             from_user: req.user.id,
             to_user,
-            message: escapeHTML(message),
+            message: message,
             is_read: 0,
-            created_at: moment(new Date).format("yyyy-MM-DD HH:mm:ss"),
-            updated_at: moment(new Date).format("yyyy-MM-DD HH:mm:ss")
+            created_at: getCurrentFormatedDate(),
+            updated_at: getCurrentFormatedDate()
         };
         if (uploadPath) {
             newMessage.filePath = filePath;

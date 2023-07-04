@@ -1,24 +1,23 @@
-const moment = require('moment');
 const mysql = require('./mysqlConnect');
-const { getProperPagination } = require('../utils');
+const { getProperPagination, getCurrentFormatedDate } = require('../utils');
+
+const userCombinedQuery = 'select m.*, u.name as createdBy from mailed_quotation as m left join users as u on m.user_id = u.id';
 
 exports.store = (data, isNew = true) => {
     return new Promise((resolve, reject) => {
-        let currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
-        let { id, subject, mail_content, to_email, invoice_id, user_id } = data;
+        let { id, to_name, subject, mail_content, to_email, invoice_id, user_id } = data;
         let quotation = {
-            subject, mail_content, to_email, user_id,
+            to_name, subject, mail_content, to_email, user_id,
             status_id: 1,
-            // created_at: currentDateStr,
-            updated_at: currentDateStr
+            updated_at: getCurrentFormatedDate()
         };
-        if (invoice_id !== undefined) quotation.invoice_id = invoice_id;
+        if (invoice_id !== undefined && invoice_id != '') quotation.invoice_id = invoice_id;
         if (isNew) {
-            quotation.created_at = currentDateStr;
+            quotation.created_at = getCurrentFormatedDate();
             quotation.view_count = 0;
         }
-        (isNew ? mysql.insertOne("mailed_quotation", quotation) : mysql.updateOne("mailed_quotation", { id }, quotation)).then(portfolio => {
-            resolve(portfolio);
+        (isNew ? mysql.insertOne("mailed_quotation", quotation) : mysql.updateOne("mailed_quotation", { id }, quotation)).then(quotation => {
+            resolve(quotation);
         }).catch(err => {
             reject(err);
         });
@@ -27,8 +26,7 @@ exports.store = (data, isNew = true) => {
 
 exports.updateOne = (id, quotation) => {
     return new Promise((resolve, reject) => {
-        let currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
-        mysql.updateOne("mailed_quotation", {id}, {...quotation, updated_at: currentDateStr}).then(quotation => {
+        mysql.updateOne("mailed_quotation", { id }, { ...quotation, updated_at: getCurrentFormatedDate() }).then(quotation => {
             resolve(quotation);
         }).catch(err => {
             reject(err);
@@ -38,7 +36,7 @@ exports.updateOne = (id, quotation) => {
 
 exports.list = (filter) => {
     return new Promise((resolve, reject) => {
-        mysql.select("mailed_quotation").then(list => {
+        mysql.select(`${userCombinedQuery} where m.deleted_at is null`).then(list => {
             resolve(list);
         }).catch(err => {
             reject(err);
@@ -48,9 +46,9 @@ exports.list = (filter) => {
 
 exports.listWithPagination = (cond, page_ = 1, perPage_ = 10) => {
     return new Promise((resolve, reject) => {
-        mysql.select("mailed_quotation", null, { isGetCount: true }).then(totalCount => {
+        mysql.select("mailed_quotation", { deleted_at: null }, { isGetCount: true }).then(totalCount => {
             let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);
-            mysql.select("mailed_quotation", null, { offset: (page - 1) * perPage, limit: perPage, orderBy: { id: 'desc' } }).then(list => {
+            mysql.query(`${userCombinedQuery} where m.deleted_at is null order by m.id desc limit ${perPage} offset ${(page - 1) * perPage}`).then(list => {
                 resolve({
                     list,
                     page,
@@ -67,18 +65,21 @@ exports.listWithPagination = (cond, page_ = 1, perPage_ = 10) => {
 }
 
 exports.findOne = (id) => {
-    return new Promise((resolve, reject) => [
-        mysql.select("mailed_quotation", { id }).then(mailed_quotation => {
+    return new Promise((resolve, reject) => {
+        mysql.query(`${userCombinedQuery} where m.id='${id}' and m.deleted_at is null`).then(([mailed_quotation]) => {
             resolve(mailed_quotation);
         }).catch(err => {
             reject(err);
         })
-    ])
+    })
 }
 
 exports.delete = (id) => {
     return new Promise((resolve, reject) => {
-        mysql.deleteMany("mailed_quotation", { id }).then(() => {
+        mysql.updateOne("mailed_quotation", { id }, {
+            updated_at: getCurrentFormatedDate(),
+            deleted_at: getCurrentFormatedDate()
+        }).then(() => {
             resolve();
         }).catch(err => {
             reject(err);

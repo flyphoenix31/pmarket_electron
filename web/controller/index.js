@@ -6,6 +6,7 @@ const RoleController = require('./role');
 const PortfolioController = require('./portfolio');
 const QuotationController = require('./quotation');
 const NotificationController = require('./notification');
+const ClientController = require('./client');
 
 module.exports = {
     UserController,
@@ -15,5 +16,6 @@ module.exports = {
     RoleController,
     PortfolioController,
     QuotationController,
-    NotificationController
+    NotificationController,
+    ClientController
 }

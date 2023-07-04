@@ -1,6 +1,6 @@
-const moment = require('moment');
 const mysql = require('./mysqlConnect');
 const ioHandler = require('../ioHandler');
+const { getCurrentFormatedDate } = require('../utils');
 
 const TYPES = {
     SYSTEM: 1,
@@ -16,12 +16,11 @@ exports.TYPES = TYPES;
 exports.READ_STATUS = READ_STATUS;
 
 const generateJobUserNotification = (users, job) => {
-    const currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
     return new Promise((resolve, reject) => {
         const newNotifications = [];
         const newNotification = {
-            created_at: currentDateStr,
-            updated_at: currentDateStr,
+            created_at: getCurrentFormatedDate(),
+            updated_at: getCurrentFormatedDate(),
             subject: "New Job Alert",
             content: "You got a new Job Alert",
             is_read: 0,

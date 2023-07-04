@@ -1,4 +1,3 @@
-const moment = require('moment');
 const Portfolio = require('../models/Portfolio');
 const isEmpty = require('../utils/isEmpty');
 const validator = require('validator')

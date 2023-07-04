@@ -3,8 +3,6 @@ const bcrypt = require('bcrypt');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
 const Job = require('../models/Job');
-const moment = require('moment');
-const { escapeHTML } = require('../utils');
 
 exports.list = (req, res) => {
     mysql.select("roles").then(list => {

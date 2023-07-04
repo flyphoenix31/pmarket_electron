@@ -1,10 +1,9 @@
-const moment = require('moment');
 const validator = require('validator');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
 const Job = require('../models/Job');
 const Notification = require('../models/Notification')
-const { escapeHTML } = require('../utils');
+const { getCurrentFormatedDate } = require('../utils');
 
 exports.list = (req, res) => {
     Job.listWithPagination({
@@ -87,20 +86,7 @@ exports.new = (req, res) => {
         });
     }
 
-    const currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
-
     let { title, short_description, full_description, job_nature, tags, is_featured, is_urgent, budget, categories, delivery_day, role, users } = req.body;
-    title = escapeHTML(title);
-    short_description = escapeHTML(short_description);
-    full_description = escapeHTML(full_description);
-    job_nature = escapeHTML(job_nature);
-    tags = escapeHTML(tags);
-    is_featured = escapeHTML(is_featured);
-    is_urgent = escapeHTML(is_urgent);
-    budget = escapeHTML(budget);
-    users = escapeHTML(users);
-    categories = escapeHTML(categories);
-    role = escapeHTML(role);
 
     const newJob = {
         title,
@@ -113,8 +99,8 @@ exports.new = (req, res) => {
         budget,
         delivery_day,
         status_id: 1,
-        created_at: currentDateStr,
-        updated_at: currentDateStr
+        created_at: getCurrentFormatedDate(),
+        updated_at: getCurrentFormatedDate()
     }
     if (role) {
         newJob.type_id = 1;
@@ -131,8 +117,8 @@ exports.new = (req, res) => {
         });
         if (role) {
             newJobDistributions.push({
-                created_at: currentDateStr,
-                updated_at: currentDateStr,
+                created_at: getCurrentFormatedDate(),
+                updated_at: getCurrentFormatedDate(),
                 job_id: job.id,
                 role_id: role
             });
@@ -140,8 +126,8 @@ exports.new = (req, res) => {
         } else if (users && Array.isArray(users) && users.length) {
             users.forEach(user_id => {
                 newJobDistributions.push({
-                    created_at: currentDateStr,
-                    updated_at: currentDateStr,
+                    created_at: getCurrentFormatedDate(),
+                    updated_at: getCurrentFormatedDate(),
                     job_id: job.id,
                     user_id: user_id
                 })
@@ -180,16 +166,6 @@ exports.update = (req, res) => {
     }
 
     let { id, title, short_description, full_description, job_nature, tags, is_featured, is_urgent, budget, categories, delivery_day } = req.body;
-    id = escapeHTML(id);
-    title = escapeHTML(title);
-    short_description = escapeHTML(short_description);
-    full_description = escapeHTML(full_description);
-    job_nature = escapeHTML(job_nature);
-    tags = escapeHTML(tags);
-    is_featured = escapeHTML(is_featured);
-    is_urgent = escapeHTML(is_urgent);
-    budget = escapeHTML(budget);
-    categories = escapeHTML(categories);
 
     const updatedJob = {
         title,
@@ -201,7 +177,7 @@ exports.update = (req, res) => {
         is_urgent,
         budget,
         delivery_day,
-        updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss")
+        updated_at: getCurrentFormatedDate()
     };
     let newCategorySQL = '';
     categories.forEach(item => {
@@ -230,7 +206,6 @@ exports.closeJob = (req, res) => {
             message: "Job not found"
         })
     }
-    req.body.id = escapeHTML(req.body.id);
     Job.closeJob(req.body.id).then((job) => {
         if (!job) {
             return res.json({

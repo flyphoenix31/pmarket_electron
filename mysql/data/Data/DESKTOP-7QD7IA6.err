@@ -5353,3 +5353,123 @@ Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
 2023-07-03T03:51:59.874125Z 1865 [Note] Aborted connection 1865 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
 2023-07-03T06:29:33.062730Z 2017 [Note] Aborted connection 2017 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
 2023-07-03T06:34:22.780650Z 2036 [Note] Aborted connection 2036 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-03T12:46:30.646642Z 0 [ERROR] Cannot open Windows EventLog; check privileges, or start server with --log_syslog=0
+2023-07-03T12:46:30.646703Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 19032 ...
+2023-07-03T12:46:30.695825Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-07-03T12:46:30.696209Z 0 [Note] InnoDB: Uses event mutexes
+2023-07-03T12:46:30.696444Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-07-03T12:46:30.696818Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-07-03T12:46:30.697120Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-07-03T12:46:30.697917Z 0 [Note] InnoDB: Number of pools: 1
+2023-07-03T12:46:30.698266Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-07-03T12:46:30.700656Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-07-03T12:46:30.706732Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-07-03T12:46:30.806093Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-07-03T12:46:30.816537Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 4937332
+2023-07-03T12:46:30.816906Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 4937341
+2023-07-03T12:46:30.817282Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-07-03T12:46:30.817575Z 0 [Note] InnoDB: Starting crash recovery.
+2023-07-03T12:46:32.038410Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-07-03T12:46:32.038818Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-07-03T12:46:32.039373Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-07-03T12:46:32.205449Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-07-03T12:46:32.216813Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-07-03T12:46:32.217279Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-07-03T12:46:32.217836Z 0 [Note] InnoDB: Waiting for purge to start
+2023-07-03T12:46:32.287072Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 4937341
+2023-07-03T12:46:32.287668Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\blender\electron\mysql\data\Data\ib_buffer_pool
+2023-07-03T12:46:32.287733Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-07-03T12:46:32.468914Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-07-03T12:46:32.469458Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-07-03T12:46:32.469922Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-07-03T12:46:32.470331Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-07-03T12:46:32.487138Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-07-03T12:46:32.487526Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-07-03T12:46:32.498109Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230703  5:46:32
+2023-07-03T12:46:32.498478Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-07-03T12:46:32.505165Z 0 [Note] IPv6 is available.
+2023-07-03T12:46:32.505547Z 0 [Note]   - '::' resolves to '::';
+2023-07-03T12:46:32.507458Z 0 [Note] Server socket created on IP: '::'.
+2023-07-03T12:46:32.790112Z 0 [Note] Failed to start slave threads for channel ''
+2023-07-03T12:46:33.410699Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-07-03T12:46:33.411088Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-07-04T01:59:28.406249Z 538 [Note] Aborted connection 538 to db: 'creative_site' user: 'root' host: 'localhost' (Got timeout reading communication packets)
+2023-07-04T01:59:28.406252Z 531 [Note] Aborted connection 531 to db: 'creative_site' user: 'root' host: 'localhost' (Got timeout reading communication packets)
+2023-07-04T02:16:06.925106Z 530 [Note] Aborted connection 530 to db: 'creative_site' user: 'root' host: 'localhost' (Got timeout reading communication packets)
+2023-07-04T12:25:25.407002Z 0 [ERROR] Cannot open Windows EventLog; check privileges, or start server with --log_syslog=0
+2023-07-04T12:25:25.407066Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 17524 ...
+2023-07-04T12:25:25.505924Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-07-04T12:25:25.506309Z 0 [Note] InnoDB: Uses event mutexes
+2023-07-04T12:25:25.506546Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-07-04T12:25:25.506920Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-07-04T12:25:25.507221Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-07-04T12:25:25.510419Z 0 [Note] InnoDB: Number of pools: 1
+2023-07-04T12:25:25.510770Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-07-04T12:25:25.513130Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-07-04T12:25:25.519452Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-07-04T12:25:25.633079Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-07-04T12:25:25.651321Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 5104224
+2023-07-04T12:25:25.651692Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 5104233
+2023-07-04T12:25:25.652071Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-07-04T12:25:25.652362Z 0 [Note] InnoDB: Starting crash recovery.
+2023-07-04T12:25:26.584420Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-07-04T12:25:26.584817Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-07-04T12:25:26.585351Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-07-04T12:25:26.872287Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-07-04T12:25:26.883109Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-07-04T12:25:26.883557Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-07-04T12:25:26.884102Z 0 [Note] InnoDB: Waiting for purge to start
+2023-07-04T12:25:26.954306Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 5104233
+2023-07-04T12:25:26.954893Z 0 [Note] InnoDB: Loading buffer pool(s) from D:\blender\electron\mysql\data\Data\ib_buffer_pool
+2023-07-04T12:25:26.954908Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-07-04T12:25:27.269670Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-07-04T12:25:27.270217Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-07-04T12:25:27.270681Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-07-04T12:25:27.271087Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-07-04T12:25:27.315022Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-07-04T12:25:27.315425Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-07-04T12:25:27.324712Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-07-04T12:25:27.328082Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230704  5:25:27
+2023-07-04T12:25:27.329359Z 0 [Note] IPv6 is available.
+2023-07-04T12:25:27.329577Z 0 [Note]   - '::' resolves to '::';
+2023-07-04T12:25:27.329873Z 0 [Note] Server socket created on IP: '::'.
+2023-07-04T12:25:27.580466Z 0 [Note] Failed to start slave threads for channel ''
+2023-07-04T12:25:28.376896Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-07-04T12:25:28.377295Z 0 [Note] D:\blender\electron\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-07-04T16:33:17.130177Z 856 [Note] Aborted connection 856 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T17:48:19.056666Z 1816 [Note] Got an error reading communication packets
+2023-07-04T18:54:10.238009Z 2295 [Note] Aborted connection 2295 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.238653Z 2293 [Note] Aborted connection 2293 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.238683Z 2192 [Note] Aborted connection 2192 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.239144Z 2223 [Note] Aborted connection 2223 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.239186Z 2257 [Note] Aborted connection 2257 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.241247Z 2305 [Note] Aborted connection 2305 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.240957Z 2243 [Note] Aborted connection 2243 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.241211Z 2303 [Note] Aborted connection 2303 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.240795Z 2232 [Note] Aborted connection 2232 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.241743Z 2194 [Note] Aborted connection 2194 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.242215Z 2283 [Note] Aborted connection 2283 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.242247Z 2215 [Note] Aborted connection 2215 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.242786Z 2285 [Note] Aborted connection 2285 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.242808Z 2217 [Note] Aborted connection 2217 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.242856Z 2201 [Note] Aborted connection 2201 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.242903Z 2219 [Note] Aborted connection 2219 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.242965Z 2313 [Note] Aborted connection 2313 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:10.243003Z 2315 [Note] Aborted connection 2315 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:57.238889Z 2327 [Note] Aborted connection 2327 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:57.240424Z 2324 [Note] Aborted connection 2324 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:57.240729Z 2317 [Note] Aborted connection 2317 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:54:57.240759Z 2319 [Note] Aborted connection 2319 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:55:59.136364Z 2330 [Note] Aborted connection 2330 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.731740Z 2397 [Note] Aborted connection 2397 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.736843Z 2392 [Note] Aborted connection 2392 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.736991Z 2360 [Note] Aborted connection 2360 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.737016Z 2374 [Note] Aborted connection 2374 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.737269Z 2358 [Note] Aborted connection 2358 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.737327Z 2368 [Note] Aborted connection 2368 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.738233Z 2388 [Note] Aborted connection 2388 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.738248Z 2390 [Note] Aborted connection 2390 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.738259Z 2370 [Note] Aborted connection 2370 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-04T18:57:13.738277Z 2378 [Note] Aborted connection 2378 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)

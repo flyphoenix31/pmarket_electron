@@ -1,19 +1,16 @@
-const moment = require('moment');
 const mysql = require('./mysqlConnect');
-const { getProperPagination } = require('../utils');
+const { getProperPagination, getCurrentFormatedDate } = require('../utils');
 
 exports.store = (data, isNew = true) => {
     return new Promise((resolve, reject) => {
-        let currentDateStr = moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
         let { id, tag, title, is_featured, sub_title, content, slug_url } = data;
         let portfolio = {
             tag, title, is_featured, sub_title, content, slug_url,
             status_id: 1,
-            // created_at: currentDateStr,
-            updated_at: currentDateStr
+            updated_at: getCurrentFormatedDate()
         };
         if (isNew) {
-            portfolio.created_at = currentDateStr;
+            portfolio.created_at = getCurrentFormatedDate();
         }
         (isNew ? mysql.insertOne("portfolio", portfolio) : mysql.updateOne("portfolio", { id }, portfolio)).then(portfolio => {
             resolve(portfolio);

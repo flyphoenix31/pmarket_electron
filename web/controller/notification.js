@@ -1,9 +1,7 @@
-const moment = require('moment');
 const validator = require('validator');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
 const Notification = require('../models/Notification')
-const { escapeHTML } = require('../utils');
 
 exports.unreadList = (req, res) => {
     Notification.unreadList(req.user.id).then(list => {
@@ -21,7 +19,6 @@ exports.unreadList = (req, res) => {
 }
 
 exports.makeRead = (req, res) => {
-    req.body.id = escapeHTML(req.body.id);
     if (req.body.id === undefined) {
         return res.json({
             status: 1,

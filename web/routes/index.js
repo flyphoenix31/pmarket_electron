@@ -14,11 +14,8 @@ router.get('/', (req, res) => {
     res.sendFile(filePath);
 });
 router.use('/member', member);
+
 router.get('*', (req, res) => {
-    console.log("unknown");
-    // let filePath = path.resolve(__dirname, '..\\client\\index.html');
-    // res.sendFile(filePath);
-    // global.sendLog(filePath);
     res.status(404).end();
 })
 module.exports = router;

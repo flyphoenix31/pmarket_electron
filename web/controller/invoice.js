@@ -1,4 +1,3 @@
-const moment = require('moment');
 const Invoice = require('../models/Invoice');
 const isEmpty = require('../utils/isEmpty');
 const validator = require('validator')

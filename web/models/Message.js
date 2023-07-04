@@ -1,8 +1,8 @@
-const moment = require('moment');
 const mysql = require('./mysqlConnect')
+const { getCurrentFormatedDate } = require('../utils')
 exports.makeRead = (from_user, to_user) => {
     return new Promise((resolve, reject) => {
-        mysql.update('messages', { from_user, to_user, is_read: 0 }, { is_read: 1, updated_at: moment(new Date()).format("yyyy-MM-DD HH:mm:ss") }).then(() => {
+        mysql.update('messages', { from_user, to_user, is_read: 0 }, { is_read: 1, updated_at: getCurrentFormatedDate() }).then(() => {
             resolve();
         }).catch(err => {
             return reject(err);
