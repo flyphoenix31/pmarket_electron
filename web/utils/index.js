@@ -1,4 +1,7 @@
+const nodemailer = require('nodemailer');
 const moment = require('moment');
+const MailAccount = require('../models/MailAccount');
+const mysql = require('../models/mysqlConnect')
 const escapeHTML = (str) => {
     if (str === undefined || str === null) {
         return str;
@@ -18,7 +21,7 @@ const escapeHTML = (str) => {
         })
         return newStr;
     }
-    if (typeof(str) === 'object') {
+    if (typeof (str) === 'object') {
         let newStr = {};
         Object.keys(str).forEach(key => {
             if (key == "files") {
@@ -46,10 +49,58 @@ exports.getProperPagination = (page, perPage, totalCount) => {
     if (page < 1) page = 1;
     if (perPage < 1) perPage = 10;
     let totalPage = Math.ceil(totalCount / perPage);
+    if (totalPage < 1) totalPage = 1;
     if (totalPage < page) page = totalPage;
     return { page, perPage, totalPage };
 }
 
 exports.getCurrentFormatedDate = () => {
     return moment(new Date()).format("yyyy-MM-DD HH:mm:ss");
+}
+
+exports.getSupportTeamUserIds = () => {
+    return new Promise((resolve, reject) => {
+        mysql.query(`select users.id from users left join roles on users.role_id = roles.id and roles.type = 1`).then(users => {
+            const userIds = [];
+            users.forEach(user => {
+                userIds.push(user.id);
+            })
+            resolve(userIds);
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
+exports.sendMail = ({ to, subject, html}) => {
+    return new Promise((resolve, reject) => {
+        MailAccount.getActiveAccount().then(mailAccount => {
+            if (!mailAccount) {
+                return resolve(false);
+            }
+            const transporter = nodemailer.createTransport({
+                host: mailAccount.mail_host,
+                port: mailAccount.mail_port,
+                secure: false,
+                auth: {
+                    user: mailAccount.mail_username,
+                    pass: mailAccount.mail_password
+                }
+            });
+            transporter.sendMail({
+                from: mailAccount.from_address, // sender address
+                // from: 'mailtrap@pmarket.com', // sender address
+                to,
+                subject, // Subject line
+                // text: "Hello world?", // plain text body
+                html
+            }).then(info => {
+                resolve(true);
+            }).catch(err => {
+                reject(err);
+            });
+        }).catch(err => {
+            reject(err);
+        })
+    })
 }

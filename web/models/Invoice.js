@@ -1,13 +1,22 @@
 const Setting = require('./Setting');
 const mysql = require('./mysqlConnect');
-const { getProperPagination, getCurrentFormatedDate } = require('../utils');
+const { getProperPagination, getCurrentFormatedDate, getSupportTeamUserIds } = require('../utils');
+
+const STATUS = {
+    DRAFT: 1,
+    MAILED: 2,
+    VIEWED: 3,
+    UN_PAID: 4,
+    PAID: 5
+}
+exports.STATUS = STATUS;
 
 exports.store = (data, isNew = true) => {
     return new Promise((resolve, reject) => {
         let { id, name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, items, tax_type_id, tax_value, discount_type_id, discount_value, user_id } = data;
         let invoice = {
-            name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, user_id,
-            status_id: 1,
+            name, /*invoice_number,*/ invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, user_id,
+            status_id: STATUS.DRAFT,
             updated_at: getCurrentFormatedDate()
         };
         if (isNew) {
@@ -83,30 +92,36 @@ exports.store = (data, isNew = true) => {
             })
         }
         else {
-            Promise.all([
-                mysql.insertOne("invoice_master", invoice),
-                Setting.getBank()
-            ]).then(([invoice, bank]) => {
-                newItems.forEach(item => {
-                    item.invoice_id = invoice.id
-                });
+            mysql.query(`select max(invoice_number) max_invoice_number from invoice_master`).then(([{ max_invoice_number }]) => {
+                if (!max_invoice_number) max_invoice_number = 0;
+                invoice.invoice_number = max_invoice_number + 1;
                 Promise.all([
-                    mysql.insertMany("invoice_items", newItems),
-                    mysql.insertOne("invoice_bank_details", {
-                        created_at: getCurrentFormatedDate(),
-                        updated_at: getCurrentFormatedDate(),
-                        invoice_id: invoice.id,
-                        account_number: bank.account_number,
-                        bank_name: bank.bank_name,
-                        bank_code: bank.bank_code,
-                        bank_country: bank.bank_country
-                    })
-                ]).then(([insertManyResult, bank_detail]) => {
-                    mysql.select("invoice_items", { invoice_id: invoice.id }).then(items => {
-                        resolve({
-                            invoice,
-                            items,
-                            bank_detail
+                    mysql.insertOne("invoice_master", invoice),
+                    Setting.get()
+                ]).then(([invoice, bank]) => {
+                    newItems.forEach(item => {
+                        item.invoice_id = invoice.id
+                    });
+                    Promise.all([
+                        mysql.insertMany("invoice_items", newItems),
+                        mysql.insertOne("invoice_bank_details", {
+                            created_at: getCurrentFormatedDate(),
+                            updated_at: getCurrentFormatedDate(),
+                            invoice_id: invoice.id,
+                            account_number: bank.account_number,
+                            bank_name: bank.bank_name,
+                            bank_code: bank.bank_code,
+                            bank_country: bank.bank_country
+                        })
+                    ]).then(([insertManyResult, bank_detail]) => {
+                        mysql.select("invoice_items", { invoice_id: invoice.id }).then(items => {
+                            resolve({
+                                invoice,
+                                items,
+                                bank_detail
+                            })
+                        }).catch(err => {
+                            reject(err);
                         })
                     }).catch(err => {
                         reject(err);
@@ -148,7 +163,7 @@ exports.list = (filter) => {
 exports.listWithPagination = (cond, page_ = 1, perPage_ = 10) => {
     return new Promise((resolve, reject) => {
         mysql.select("invoice_master", null, { isGetCount: true }).then(totalCount => {
-            let {page, perPage, totalPage} = getProperPagination(page_, perPage_, totalCount);
+            let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);
             mysql.query(
                 `select i.*,
                     u.name as user_name,
@@ -204,4 +219,33 @@ exports.findOne = (id) => {
             reject(err);
         })
     });
+}
+
+
+exports.customerView = (id) => {
+    return new Promise((resolve, reject) => {
+        const updateSql = `update invoice_master set status_id = ${STATUS.VIEWED} where id = '${id}';`
+        const invoiceSql =
+            `select invoice_master.* ,
+                b.account_number,
+                b.bank_name,
+                b.bank_code,
+                b.bank_country,
+                c.name as c_name,
+                c.code as c_code,
+                c.symbol as c_symbol,
+                c.country_name as c_country_name
+                from invoice_master 
+                left join country_currency as c on invoice_master.currency_id=c.id
+                left join invoice_bank_details as b on invoice_master.id=b.invoice_id
+                where invoice_master.id = ${id};`
+        const itemsSql = `select * from invoice_items where invoice_id=${id};`;
+        mysql.query(`${updateSql}${invoiceSql}${itemsSql}`).then(([updateResult, [invoice], items]) => {
+            resolve({
+                invoice, items
+            });
+        }).catch(err => {
+            reject(err);
+        })
+    })
 }

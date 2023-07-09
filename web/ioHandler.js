@@ -28,8 +28,10 @@ const sendConnectionState = () => {
     const connectedUsers = [];
     try {
         connections.forEach(connection => {
-            if (connection.userId)
-                connectedUsers.push(connection.userId);
+            if (connection.userId) {
+                if (connectedUsers.findIndex(item => item == connection.userId) < 0)
+                    connectedUsers.push(connection.userId);
+            }
         })
     } catch(err) {
     }
@@ -42,13 +44,23 @@ const sendConnectionState = () => {
     }
 }
 
-const sendNotification = (userIds, notification) => {
+const sendEventsToUsers = (userIds, {event, data}) => {
     userIds.forEach(userId => {
         connections.forEach(connection => {
             if (connection.userId == userId) {
-                connection.emit('notification', notification);
+                connection.emit(event, data);
             }
         })
+    })
+}
+
+const sendNotification = (userIds, notification) => {
+    sendEventsToUsers(userIds, {event: 'notification', data: notification})
+}
+
+const sendNewUserEvent = (user) => {
+    connections.forEach(connection => {
+        connection.emit('newUser', user);
     })
 }
 
@@ -58,5 +70,7 @@ module.exports = {
     connections,
     onConnect,
     newMessage,
-    sendNotification
+    sendNotification,
+    sendNewUserEvent,
+    sendEventsToUsers
 }

@@ -6,5 +6,9 @@ const { escapeHTMLMiddleware } = require('../../utils');
 
 router.get('/list', escapeHTMLMiddleware, RoleController.list);
 router.get('/developerList', escapeHTMLMiddleware, RoleController.developerList);
+router.post('/new', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, RoleController.new);
+router.post('/update', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, RoleController.update);
+router.get('/list-with-permission', escapeHTMLMiddleware, RoleController.listWithPermission);
+router.get('/findOne', escapeHTMLMiddleware, RoleController.findOne);
 
 module.exports = router;

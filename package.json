@@ -26,6 +26,7 @@
     "mysql": "^2.18.1",
     "node-network-bandwidth-monitor": "^1.0.3",
     "node-schedule": "^2.1.1",
+    "nodemailer": "^6.9.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
@@ -33,6 +34,7 @@
     "regedit": "^5.1.2",
     "socket.io": "^4.7.0",
     "systeminformation": "^5.18.4",
+    "uuid": "^9.0.0",
     "validator": "^13.9.0"
   }
 }

@@ -5,8 +5,13 @@ const JobController = require('./job');
 const RoleController = require('./role');
 const PortfolioController = require('./portfolio');
 const QuotationController = require('./quotation');
+const MailedQuotationController = require('./mailedQuotation');
 const NotificationController = require('./notification');
 const ClientController = require('./client');
+const SettingController = require('./setting');
+const EnquiryController = require('./enquiry');
+const CategoryController = require('./category');
+const PermissionController = require('./permission');
 
 module.exports = {
     UserController,
@@ -16,6 +21,11 @@ module.exports = {
     RoleController,
     PortfolioController,
     QuotationController,
+    MailedQuotationController,
     NotificationController,
-    ClientController
+    ClientController,
+    SettingController,
+    EnquiryController,
+    CategoryController,
+    PermissionController
 }

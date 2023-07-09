@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
 const User = require('../models/User');
+
+const ioHandler = require('../ioHandler');
 const { getCurrentFormatedDate } = require('../utils');
 
 exports.login = (req, res) => {
@@ -244,6 +246,7 @@ exports.new = (req, res) => {
                 newUser.updated_at = newUser.created_at;
                 newUser.work_status = 0;
                 User.new(newUser).then(user => {
+                    ioHandler.sendNewUserEvent(user);
                     return res.json({
                         status: 0,
                         user

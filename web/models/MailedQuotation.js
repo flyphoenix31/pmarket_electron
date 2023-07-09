@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const mysql = require('./mysqlConnect');
 const { getProperPagination, getCurrentFormatedDate } = require('../utils');
 
@@ -5,17 +6,21 @@ const userCombinedQuery = 'select m.*, u.name as createdBy from mailed_quotation
 
 exports.store = (data, isNew = true) => {
     return new Promise((resolve, reject) => {
-        let { id, to_name, subject, mail_content, to_email, invoice_id, user_id } = data;
+        let { id, to_name, subject, mail_content, to_email, invoice_id, quotation_id, user_id } = data;
         let quotation = {
             to_name, subject, mail_content, to_email, user_id,
             status_id: 1,
             updated_at: getCurrentFormatedDate()
         };
         if (invoice_id !== undefined && invoice_id != '') quotation.invoice_id = invoice_id;
+        if (quotation_id !== undefined && quotation_id != '') quotation.quotation_id = quotation_id;
         if (isNew) {
             quotation.created_at = getCurrentFormatedDate();
             quotation.view_count = 0;
+            quotation.public_link = uuidv4();
+
         }
+        console.log('quotation', quotation);
         (isNew ? mysql.insertOne("mailed_quotation", quotation) : mysql.updateOne("mailed_quotation", { id }, quotation)).then(quotation => {
             resolve(quotation);
         }).catch(err => {
