@@ -102,7 +102,7 @@ const createWindow = () => {
     win.removeMenu();
 
     win.loadFile('win/index.html')
-    // win.webContents.openDevTools();
+    win.webContents.openDevTools();
 
     win.webContents.on('dom-ready', () => {
         hkcu_helper.isSet().then(isSet => {
