@@ -8,6 +8,7 @@ router.get ('/list', passport.authenticate('jwt', { session: false }), escapeHTM
 router.get ('/findOne', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, InvoiceController.findOne);
 router.post('/new', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, InvoiceController.new);
 router.post('/update', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, InvoiceController.update);
+router.post('/updateimg', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, InvoiceController.updateimg);
 router.get ('/status/list', InvoiceController.statusList);
 router.post('/send-quotation', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, InvoiceController.sendQuotation);
 // router.get ('/view-invoice', escapeHTMLMiddleware, InvoiceController.customerView);

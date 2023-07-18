@@ -5,6 +5,7 @@ const router = express.Router();
 const user = require('./user');
 const job = require('./job');
 const chat = require('./chat');
+const history = require('./history');
 const invoice = require('./invoice');
 const role = require('./role');
 const portfolio = require('./portfolio');
@@ -16,9 +17,11 @@ const setting = require('./setting');
 const permission = require('./permission');
 const enquiry = require('./enquiry');
 const category = require('./category');
+const shared = require('./shared')
 
 router.use('/user', user);
 router.use('/chat', chat);
+router.use('/history', history);
 router.use('/invoice', invoice);
 router.use('/job', job);
 router.use('/role', role);
@@ -31,6 +34,7 @@ router.use('/setting', setting);
 router.use('/permission', permission);
 router.use('/enquiry', enquiry);
 router.use('/category', category);
+router.use('/shared', shared);
 
 router.get('*', (req, res) => {
     res.status(404).end();

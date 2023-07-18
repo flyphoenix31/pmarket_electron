@@ -5,7 +5,9 @@ const validator = require('validator')
 const mysql = require('../models/mysqlConnect');
 const MailedQuotationController = require('./mailedQuotation');
 const config = require('../../config');
-const { sendMail } = require('../utils');
+const path = require('path');
+const fs = require('fs');
+const { sendMail, getCurrentFormatedDate } = require('../utils');
 
 const itemValidate = (invoice_item) => {
     const { description, item_notes, unit_price, quantity, has_tax } = invoice_item;
@@ -147,6 +149,71 @@ exports.update = (req, res) => {
         })
     })
 }
+exports.updateimg = (req, res) => {
+    console.log("updateimg:", req.files)
+    const { id } = req.body;
+    console.log("updateid", id);
+    mysql.select("invoice_master", { id }).then(([data]) => {
+        if (!data) {
+            return res.json({
+                status: 1,
+                message: "Invoice doesn't exist"
+            })
+        }
+        let fileName = null;
+        let uploadPath = null;
+        const saveData = () => {
+            const updateData = {
+                updated_at: getCurrentFormatedDate()
+            }
+            if (uploadPath) {
+                updateData.invoice_img = filePath;
+            }
+            console.log("updateData", updateData);
+            Invoice.update({ id }, updateData).then(() => {
+                res.json({
+                    status: 0
+                })
+            }).catch(err => {
+                console.log(err);
+                res.json({
+                    status: 1,
+                    message: 'Please try again later'
+                })
+            })
+        }
+
+        if (req.files && Object.keys(req.files).length) {
+            const file = req.files.invoice_img;
+            let timestamp = new Date().getTime();
+            fileName = file.name;
+            uploadPath = path.join(__dirname, `..\\client\\uploads\\invoice`);
+            if (!fs.existsSync(uploadPath)) {
+                fs.mkdirSync(uploadPath);
+            }
+            uploadPath = path.join(__dirname, `..\\client\\uploads\\invoice\\${file.name}`);
+            filePath = `\\\\uploads\\\\invoice\\\\${file.name}`;
+            file.mv(uploadPath, function (err) {
+                if (err) {
+                    return res.json({
+                        status: 1,
+                        message: 'Please try again later'
+                    })
+                }
+                saveData();
+            })
+        } else {
+            saveData();
+        }
+    }).catch(err => {
+        console.log(err);
+        return res.json({
+            status: 1,
+            message: "Please try again later"
+        })
+    })
+}
+
 
 exports.list = (req, res) => {
     Invoice.listWithPagination(null, req.query.page, req.query.perPage).then(({ list, page, perPage, totalPage }) => {

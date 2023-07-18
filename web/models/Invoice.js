@@ -11,6 +11,15 @@ const STATUS = {
 }
 exports.STATUS = STATUS;
 
+exports.update = (cond, updatedUser) => {
+    return new Promise((resolve, reject) => {
+        mysql.update('invoice_master', cond, updatedUser).then(() => {
+            resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
 exports.store = (data, isNew = true) => {
     return new Promise((resolve, reject) => {
         let { id, name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, items, tax_type_id, tax_value, discount_type_id, discount_value, user_id } = data;
