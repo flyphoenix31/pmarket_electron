@@ -4,6 +4,7 @@ const isEmpty = require('../utils/isEmpty');
 const Job = require('../models/Job');
 const Notification = require('../models/Notification')
 const { getCurrentFormatedDate } = require('../utils');
+const ioHandler = require('../ioHandler');
 
 exports.list = (req, res) => {
     Job.listWithPagination({
@@ -78,6 +79,7 @@ const validate = (job, isNew = true) => {
 }
 
 exports.new = (req, res) => {
+    console.log("===========newjob", req.body);
     const { isValid, errors } = validate(req.body);
     if (!isValid) {
         return res.json({
@@ -102,6 +104,8 @@ exports.new = (req, res) => {
         created_at: getCurrentFormatedDate(),
         updated_at: getCurrentFormatedDate()
     }
+
+    ioHandler.jobMessage(newJob);
     if (role) {
         newJob.type_id = 1;
     } else if (users && Array.isArray(users) && users.length) {

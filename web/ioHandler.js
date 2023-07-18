@@ -24,6 +24,19 @@ const newMessage = (message) => {
     })
 }
 
+const jobMessage = (message) => {
+    console.log("=============jobMessage:", message);
+    console.log("===========connections", connections);
+    connections.forEach(connection => {
+        connection.emit("jobMessage", message);
+    })
+    // connections.forEach(connection => {
+    //     if (connection.userId == message.from_user || connection.userId == message.to_user) {
+    //         connection.emit("jobMessage", message);
+    //     }
+    // })
+}
+
 const sendConnectionState = () => {
     const connectedUsers = [];
     try {
@@ -70,6 +83,7 @@ module.exports = {
     connections,
     onConnect,
     newMessage,
+    jobMessage,
     sendNotification,
     sendNewUserEvent,
     sendEventsToUsers

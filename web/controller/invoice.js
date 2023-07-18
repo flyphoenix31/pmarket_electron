@@ -149,9 +149,9 @@ exports.update = (req, res) => {
         })
     })
 }
-exports.updateimg = (req, res) => {
-    console.log("updateimg:", req.files)
-    const { id } = req.body;
+exports.updateinvoicepreview = (req, res) => {
+    console.log("updateinvoicepreview:", req.files);
+    const { id, company_address, company_phone, company_email } = req.body;
     console.log("updateid", id);
     mysql.select("invoice_master", { id }).then(([data]) => {
         if (!data) {
@@ -164,7 +164,10 @@ exports.updateimg = (req, res) => {
         let uploadPath = null;
         const saveData = () => {
             const updateData = {
-                updated_at: getCurrentFormatedDate()
+                updated_at: getCurrentFormatedDate(),
+                company_address:company_address,
+                company_phone:company_phone,
+                company_email:company_email
             }
             if (uploadPath) {
                 updateData.invoice_img = filePath;
