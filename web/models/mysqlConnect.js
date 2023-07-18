@@ -83,7 +83,6 @@ const insertMany = (table, params) => {
 }
 
 const generateCondStr = (conds, statement = 'and') => {
-    console.log("asdf", conds, statement);
     if (typeof (conds) != 'object' || conds === null || conds.eq !== undefined || conds.neq !== undefined || conds.like !== undefined) {
         if (conds === null)
             return `${statement} is null`;

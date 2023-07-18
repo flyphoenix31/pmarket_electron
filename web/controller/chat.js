@@ -73,14 +73,17 @@ exports.unreadCounts = (req, res) => {
 }
 
 exports.sendMessage = (req, res) => {
-    const { to: to_user, message } = req.body;
+    console.log("sendmessage:",req.user);
+    const { to: to_user, message, userinfo } = req.body;
     let uploadPath = undefined;
     let fileName = undefined;
     let filePath = undefined;
     const addMessage = () => {
         const newMessage = {
             from_user: req.user.id,
+            from_user_email: req.user.name,
             to_user,
+            to_user_email: userinfo,
             message: message,
             is_read: 0,
             created_at: getCurrentFormatedDate(),

@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const mysql = require('../models/mysqlConnect');
 const isEmpty = require('../utils/isEmpty');
 const User = require('../models/User');
-
 const ioHandler = require('../ioHandler');
 const { getCurrentFormatedDate } = require('../utils');
 
@@ -295,4 +294,31 @@ exports.new = (req, res) => {
             message: 'Please try again later'
         })
     })
+}
+
+exports.getroleinfo = (req, res) => {
+    const { role:rolestr, roleid } = req.body.data;
+    let sql = `select id from permissions where name='${rolestr}' `;
+    mysql.query(sql)
+        .then(result => {
+            if(!isEmpty(result)){
+                let permissionid = result[0].id;
+                let rolesql = `select * from role_has_permissions where permission_id='${permissionid}' and role_id = '${roleid}';`;
+                mysql.query(rolesql)
+                    .then(roleresult => {
+                        if(isEmpty(roleresult)){
+                            return res.json({
+                                status: 1,
+                                message: "error"
+                            })
+                        }
+                        else{
+                            return res.json({
+                                status: 0,
+                                message: "success"
+                            })
+                        }
+                    })
+            }
+        })
 }
