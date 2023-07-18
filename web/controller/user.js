@@ -44,6 +44,30 @@ exports.login = (req, res) => {
     });
 }
 
+exports.checkemail = (req, res) => {
+    console.log("email:", req.body);
+    let { email } = req.body;
+    mysql.select("users", { email, deleted_at: null }).then(([user]) => {
+        if (user) {
+            return res.json({
+                status: 0,
+                message: "Email is exist."
+            })
+        }
+        return res.json({
+            status: 1,
+            message: "Email is not exist."
+        })
+        
+    }).catch(err => {
+        console.log(err);
+        return res.json({
+            status: 1,
+            message: "Please try again later."
+        })
+    });
+}
+
 exports.current = (req, res) => {
     res.json({
         status: 0,
