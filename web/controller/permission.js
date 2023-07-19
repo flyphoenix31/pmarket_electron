@@ -4,7 +4,7 @@ const isEmpty = require('../utils/isEmpty');
 const validate = (permission, isNew = true) => {
     const { name } = permission;
     const errors = {};
-    if (isEmpty(name)) errors.name = 'Name is required';
+    if (isEmpty(name)) errors.message = 'Name is required';
 
     return {
         isValid: !Object.keys(errors).length,

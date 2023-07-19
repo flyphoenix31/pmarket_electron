@@ -7,7 +7,7 @@ const Role = require('../models/Role');
 const validate = (role, isNew = true) => {
     const { name, type, permissions } = role;
     const errors = {};
-    if (isEmpty(name)) errors.name = "Name is required";
+    if (isEmpty(name)) errors.message = "Name is required";
     if (!isEmpty(type)) {
         if (type != Role.TYPE.SUPPORT_TEAM && type != Role.TYPE.DEVELOPER) {
             errors.type = "Type is invalid";
@@ -40,7 +40,7 @@ const store = (req, res, isNew = true) => {
         if (existingRole) {
             return res.json({
                 status: 1,
-                errors: { name: "Name already exists" }
+                errors: { message: "Name already exists" }
             })
         }
         Role.store(req.body, isNew).then(role => {

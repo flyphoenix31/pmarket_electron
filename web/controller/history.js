@@ -65,15 +65,15 @@ exports.categories = (req, res) => {
 const validate = (job, isNew = true) => {
     const { title, short_description, full_description, job_nature, tags, budget, jobUsers, categories, delivery_day } = job;
     const errors = {};
-    if (isEmpty(title)) errors.title = 'Title field is required';
-    if (isEmpty(short_description)) errors.short_description = 'Short desciription field is required';
-    if (isEmpty(full_description)) errors.full_description = 'Full description field is required';
-    if (job_nature === undefined) errors.job_nature = 'Job nature field is required';
+    if (isEmpty(title)) errors.message = 'Title field is required';
+    if (isEmpty(short_description)) errors.message = 'Short desciription field is required';
+    if (isEmpty(full_description)) errors.message = 'Full description field is required';
+    if (job_nature === undefined) errors.message = 'Job nature field is required';
     // if (isEmpty(tags)) errors.tags = 'Tags field is required';
     // if (false && isNew && isEmpty(jobUsers)) errors.jobUsers = "Designers field is required";
-    if (isEmpty(categories)) errors.categories = "Category field is required";
-    else if (!Array.isArray(categories)) errors.categories = "Category is invalid";
-    if (!delivery_day) errors.delivery_day = "Delivery Day field is required";
+    if (isEmpty(categories)) errors.message = "Category field is required";
+    else if (!Array.isArray(categories)) errors.message = "Category is invalid";
+    if (!delivery_day) errors.message = "Delivery Day field is required";
     return {
         isValid: !Object.keys(errors).length,
         errors

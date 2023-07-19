@@ -6,9 +6,9 @@ const { getCurrentFormatedDate } = require('../utils');
 const validate = (enquiry) => {
     const { name, email, subject, message } = enquiry;
     const errors = {};
-    if (isEmpty(name)) errors.name = "Name is required";
-    if (isEmpty(email)) errors.email = "Email is required";
-    if (isEmpty(subject)) errors.subject = "Subject is required";
+    if (isEmpty(name)) errors.message = "Name is required";
+    if (isEmpty(email)) errors.message = "Email is required";
+    if (isEmpty(subject)) errors.message = "Subject is required";
     if (isEmpty(message)) errors.message = "Message is required";
 
     return {

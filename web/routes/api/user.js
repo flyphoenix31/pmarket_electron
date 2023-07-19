@@ -15,7 +15,7 @@ router.post('/register', passport.authenticate('jwt', { session: false}), escape
 router.post('/update', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.update);
 router.post('/password/update', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.updatePassword);
 router.post('/delete', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.delete);
-router.post('/getroleinfo', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.getroleinfo);
+router.post('/getroleinfo', UserController.getroleinfo);
 router.post('/checkemail', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, UserController.checkemail);
 
 module.exports = router;

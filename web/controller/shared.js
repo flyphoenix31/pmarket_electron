@@ -62,8 +62,25 @@ exports.new = (req, res) => {
 }
 
 exports.savetp = (req, res) => {
-    const { id, token, password } = req.body;
-    mysql.updateOne('shared', {id: id}, {token:token, password: password})
+    const { id, token, password, email, shareMode } = req.body;
+    console.log("----------------savetp:",req.body);
+    if(shareMode == 0){
+        mysql.updateOne('shared', {id: id}, {token:token, password: password, shareMode:0})
+            .then(result => {
+                console.log("editnameresult:",result);
+                return res.json({
+                    status: 0,
+                })
+            })
+            .catch(err => {
+                return res.json({
+                    status: 1,
+                    message: "Please try again later"
+                })
+            })
+    }
+    else if(shareMode == 1){
+        mysql.updateOne('shared', {id: id}, {token:token, password: password, email: email,shareMode:1 })
         .then(result => {
             console.log("editnameresult:",result);
             return res.json({
@@ -76,6 +93,7 @@ exports.savetp = (req, res) => {
                 message: "Please try again later"
             })
         })
+    }
 
 }
 
@@ -221,7 +239,6 @@ exports.fileupload = (req, res) => {
             newData.filepath = filePath;
         }
         Shared.fileUpload(newData).then((message) => {
-            // ioHandler.newMessage(message);
             return res.json({
                 status: 0
             });

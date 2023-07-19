@@ -36,7 +36,7 @@ exports.new = (req, res) => {
 }
 
 exports.update = (req, res) => {
-    const { isValid, errors} = validate(req.body);
+    const { isValid, errors } = validate(req.body);
     if (!isValid) {
         return res.json({
             status: 1,
