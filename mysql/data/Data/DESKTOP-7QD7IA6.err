@@ -6606,3 +6606,43 @@ Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
 2023-07-19T11:56:19.439177Z 0 [Note] Event Scheduler: Loaded 0 events
 2023-07-19T11:56:19.439686Z 0 [Note] E:\mailbox\pmarket_backend\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
 Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-07-19T12:26:38.277373Z 0 [Note] E:\mailbox\pmarket_backend\mysql\server\bin\pmarket_mysqld.exe (mysqld 5.7.42-log) starting as process 20316 ...
+2023-07-19T12:26:38.281813Z 0 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2023-07-19T12:26:38.282369Z 0 [Note] InnoDB: Uses event mutexes
+2023-07-19T12:26:38.282706Z 0 [Note] InnoDB: _mm_lfence() and _mm_sfence() are used for memory barrier
+2023-07-19T12:26:38.283163Z 0 [Note] InnoDB: Compressed tables use zlib 1.2.13
+2023-07-19T12:26:38.283540Z 0 [Note] InnoDB: Adjusting innodb_buffer_pool_instances from 8 to 1 since innodb_buffer_pool_size is less than 1024 MiB
+2023-07-19T12:26:38.284419Z 0 [Note] InnoDB: Number of pools: 1
+2023-07-19T12:26:38.284832Z 0 [Note] InnoDB: Not using CPU crc32 instructions
+2023-07-19T12:26:38.287363Z 0 [Note] InnoDB: Initializing buffer pool, total size = 128M, instances = 1, chunk size = 128M
+2023-07-19T12:26:38.293444Z 0 [Note] InnoDB: Completed initialization of buffer pool
+2023-07-19T12:26:38.364969Z 0 [Note] InnoDB: Highest supported file format is Barracuda.
+2023-07-19T12:26:38.400092Z 0 [Note] InnoDB: Log scan progressed past the checkpoint lsn 8890426
+2023-07-19T12:26:38.400940Z 0 [Note] InnoDB: Doing recovery: scanned up to log sequence number 8890435
+2023-07-19T12:26:38.401513Z 0 [Note] InnoDB: Database was not shutdown normally!
+2023-07-19T12:26:38.401908Z 0 [Note] InnoDB: Starting crash recovery.
+2023-07-19T12:26:38.933954Z 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2023-07-19T12:26:38.934459Z 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2023-07-19T12:26:38.935098Z 0 [Note] InnoDB: Setting file '.\ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2023-07-19T12:26:39.113940Z 0 [Note] InnoDB: File '.\ibtmp1' size is now 12 MB.
+2023-07-19T12:26:39.251683Z 0 [Note] InnoDB: 96 redo rollback segment(s) found. 96 redo rollback segment(s) are active.
+2023-07-19T12:26:39.252300Z 0 [Note] InnoDB: 32 non-redo rollback segment(s) are active.
+2023-07-19T12:26:39.253022Z 0 [Note] InnoDB: Waiting for purge to start
+2023-07-19T12:26:39.304443Z 0 [Note] InnoDB: 5.7.42 started; log sequence number 8890435
+2023-07-19T12:26:39.305179Z 0 [Note] InnoDB: Loading buffer pool(s) from E:\mailbox\pmarket_backend\mysql\data\Data\ib_buffer_pool
+2023-07-19T12:26:39.305222Z 0 [Note] Plugin 'FEDERATED' is disabled.
+2023-07-19T12:26:39.627030Z 0 [Note] Found ca.pem, server-cert.pem and server-key.pem in data directory. Trying to enable SSL support using them.
+2023-07-19T12:26:39.627693Z 0 [Note] Skipping generation of SSL certificates as certificate files are present in data directory.
+2023-07-19T12:26:39.628233Z 0 [Warning] A deprecated TLS version TLSv1 is enabled. Please use TLSv1.2 or higher.
+2023-07-19T12:26:39.628714Z 0 [Warning] A deprecated TLS version TLSv1.1 is enabled. Please use TLSv1.2 or higher.
+2023-07-19T12:26:39.630117Z 0 [Warning] CA certificate ca.pem is self signed.
+2023-07-19T12:26:39.630606Z 0 [Note] Skipping generation of RSA key pair as key files are present in data directory.
+2023-07-19T12:26:39.631337Z 0 [Note] Server hostname (bind-address): '*'; port: 33061
+2023-07-19T12:26:39.631954Z 0 [Note] IPv6 is available.
+2023-07-19T12:26:39.632252Z 0 [Note]   - '::' resolves to '::';
+2023-07-19T12:26:39.632617Z 0 [Note] Server socket created on IP: '::'.
+2023-07-19T12:26:39.953005Z 0 [Note] InnoDB: Buffer pool(s) load completed at 230719  5:26:39
+2023-07-19T12:26:40.010917Z 0 [Note] Failed to start slave threads for channel ''
+2023-07-19T12:26:40.023301Z 0 [Note] Event Scheduler: Loaded 0 events
+2023-07-19T12:26:40.023813Z 0 [Note] E:\mailbox\pmarket_backend\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
+Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
