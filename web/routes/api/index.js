@@ -3,7 +3,7 @@ const path = require('path');
 const router = express.Router();
 
 const user = require('./user');
-const job = require('./job');
+const jobs = require('./jobs');
 const chat = require('./chat');
 const history = require('./history');
 const invoice = require('./invoice');
@@ -18,12 +18,13 @@ const permission = require('./permission');
 const enquiry = require('./enquiry');
 const category = require('./category');
 const shared = require('./shared')
+const email = require('./email');
 
 router.use('/user', user);
 router.use('/chat', chat);
 router.use('/history', history);
 router.use('/invoice', invoice);
-router.use('/job', job);
+router.use('/jobs', jobs);
 router.use('/role', role);
 router.use('/portfolio', portfolio);
 router.use('/quotation', quotation);
@@ -35,6 +36,7 @@ router.use('/permission', permission);
 router.use('/enquiry', enquiry);
 router.use('/category', category);
 router.use('/shared', shared);
+router.use('/email', email);
 
 router.get('*', (req, res) => {
     res.status(404).end();

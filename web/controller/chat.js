@@ -81,7 +81,7 @@ exports.sendMessage = (req, res) => {
     const addMessage = () => {
         const newMessage = {
             from_user: req.user.id,
-            from_user_email: req.user.name,
+            from_user_email: req.user.email,
             to_user,
             to_user_email: userinfo,
             message: message,

@@ -58,7 +58,7 @@ exports.checkemail = (req, res) => {
             status: 1,
             message: "Email is not exist."
         })
-        
+
     }).catch(err => {
         console.log(err);
         return res.json({
@@ -76,7 +76,8 @@ exports.current = (req, res) => {
 }
 
 exports.list = (req, res) => {
-    User.listWithPagination({ deleted_at: null }, req.query.page, req.query.perPage).then(({ list, page, perPage, totalPage }) => {
+    console.log("usersreqqueyr", req.query);
+    User.listWithPagination({ deleted_at: null }, req.query.page, req.query.perPage,{ orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
         return res.json({
             status: 0,
             users: list,
@@ -107,13 +108,14 @@ exports.jobUsers = (req, res) => {
 }
 
 const validate = (user, newUser = true) => {
-    const { name, email, password, phone, gender, role_id } = user;
+    const { name, email, password, phone, gender, bio, role_id } = user;
     const errors = {};
     if (isEmpty(name)) errors.name = 'Name field is required';
     if (isEmpty(email)) errors.email = 'Email field is required';
     if (newUser && isEmpty(password)) errors.password = 'Password field is required';
     if (isEmpty(phone)) errors.phone = 'Phone field is required';
     if (isEmpty(gender)) errors.gender = 'Gender field is required';
+    if (isEmpty(bio)) errors.bio = 'Bio field is required';
     if (role_id === undefined) errors.role_id = 'Role field is required';
     return {
         isValid: !Object.keys(errors).length,
@@ -321,22 +323,22 @@ exports.new = (req, res) => {
 }
 
 exports.getroleinfo = (req, res) => {
-    const { role:rolestr, roleid } = req.body.data;
+    const { role: rolestr, roleid } = req.body.data;
     let sql = `select id from permissions where name='${rolestr}' `;
     mysql.query(sql)
         .then(result => {
-            if(!isEmpty(result)){
+            if (!isEmpty(result)) {
                 let permissionid = result[0].id;
                 let rolesql = `select * from role_has_permissions where permission_id='${permissionid}' and role_id = '${roleid}';`;
                 mysql.query(rolesql)
                     .then(roleresult => {
-                        if(isEmpty(roleresult)){
+                        if (isEmpty(roleresult)) {
                             return res.json({
                                 status: 1,
                                 message: "error"
                             })
                         }
-                        else{
+                        else {
                             return res.json({
                                 status: 0,
                                 message: "success"

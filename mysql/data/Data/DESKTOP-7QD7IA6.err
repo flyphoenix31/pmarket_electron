@@ -6646,3 +6646,7 @@ Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
 2023-07-19T12:26:40.023301Z 0 [Note] Event Scheduler: Loaded 0 events
 2023-07-19T12:26:40.023813Z 0 [Note] E:\mailbox\pmarket_backend\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
 Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-07-19T17:51:26.554645Z 12810 [Note] Aborted connection 12810 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-19T17:51:26.555977Z 12818 [Note] Aborted connection 12818 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-19T18:57:23.227196Z 13566 [Note] Aborted connection 13566 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-19T18:57:23.227196Z 17662 [Note] Aborted connection 17662 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
