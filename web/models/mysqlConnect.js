@@ -161,7 +161,7 @@ const updateOne = (table, conds, params) => {
     return new Promise((resolve, reject) => {
         update(table, conds, params).then(() => {
             select(table, conds).then(([value]) => {
-                resolve(value);
+                return resolve(value);
             }).catch(err => {
                 reject(err);
             })

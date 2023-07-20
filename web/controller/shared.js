@@ -98,13 +98,35 @@ exports.savetp = (req, res) => {
 }
 
 exports.savem = (req, res) => {
-    const { id , email } = req.body;
-    console.log("savem:", id, email);
+    const { id , email, send_email, token } = req.body;
+    console.log("savem:", req.body);
     mysql.updateOne('shared', {id: id}, {email: email})
         .then(result => {
-            return res.json({
-                status: 0
-            })
+            console.log("========savemresult", result);  
+            // INSERT INTO time_zone (Time_zone_id, Use_leap_seconds)   VALUES (1,'N'), (2,'N'), (3,'N'), (4,'Y'), (5,'N');
+            let email_sql = `insert into emails(sender_email, receiver_email, token, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(email) ? '' : email}', '${isEmpty(token) ? '' : token}', '${getCurrentFormatedDate()}');`;
+            console.log("emailsql", email_sql);
+            mysql.query(email_sql)
+                .then(result => {
+                    global.connections.forEach(connection => {
+                        console.log("socket connection:", connection.userInfo);
+                        if(!isEmpty(connection.userInfo)){
+                            if(email == connection.userInfo.email){
+                                console.log("------------------")
+                                connection.emit("sendemail", {email: send_email, token: token});
+                            }
+                        }
+                    });
+                    return res.json({
+                        status: 0
+                    })
+                })
+                .catch(err => {
+                    return res.json({
+                        status : 1,
+                        message: "Please try again later"
+                    })
+                })
         })
         .catch(err => {
             return res.json({

@@ -33,7 +33,7 @@ exports.viewQuotation = (req, res) => {
                 message: "Mailed Quotation not found"
             })
         }
-        Notification.generateMailedQuotationViewedNotification(mailedQuotation);
+        // Notification.generateMailedQuotationViewedNotification(mailedQuotation);
         if (mailedQuotation.invoice_id !== null) {
             Invoice.customerView(mailedQuotation.invoice_id).then(({invoice, items}) => {
                 return res.json({

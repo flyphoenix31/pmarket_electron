@@ -6650,3 +6650,17 @@ Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
 2023-07-19T17:51:26.555977Z 12818 [Note] Aborted connection 12818 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
 2023-07-19T18:57:23.227196Z 13566 [Note] Aborted connection 13566 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
 2023-07-19T18:57:23.227196Z 17662 [Note] Aborted connection 17662 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T18:52:30.763331Z 141839 [Note] Aborted connection 141839 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T18:52:30.763331Z 141863 [Note] Aborted connection 141863 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T19:08:39.232765Z 144896 [Note] Aborted connection 144896 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T19:10:54.141256Z 145405 [Note] Aborted connection 145405 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:14:48.003874Z 153342 [Note] Aborted connection 153342 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:22:01.898450Z 154394 [Note] Got timeout reading communication packets
+2023-07-20T20:23:37.728884Z 154491 [Note] Aborted connection 154491 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:23:37.730576Z 154489 [Note] Aborted connection 154489 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:23:37.730587Z 154490 [Note] Aborted connection 154490 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:23:37.730638Z 154488 [Note] Aborted connection 154488 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:23:37.730659Z 154492 [Note] Aborted connection 154492 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:23:37.730777Z 154493 [Note] Aborted connection 154493 to db: 'creative_site' user: 'root' host: 'localhost' (Got an error reading communication packets)
+2023-07-20T20:50:43.614156Z 160320 [Note] Got an error reading communication packets
+2023-07-20T20:50:43.614374Z 160321 [Note] Got an error reading communication packets

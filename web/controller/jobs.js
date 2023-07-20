@@ -106,9 +106,13 @@ exports.new = (req, res) => {
         created_at: getCurrentFormatedDate(),
         updated_at: getCurrentFormatedDate()
     }
-    //send job message
-    ioHandler.jobMessage(newJob);
-    console.log("===========secondnewjob", newJob);
+    
+    
+    // //send job message
+    // ioHandler.jobMessage(newJob);
+    // console.log("===========secondnewjob", newJob);
+
+
     if (role) {
         newJob.type_id = 1;
     } else if (users && Array.isArray(users) && users.length) {
@@ -129,6 +133,7 @@ exports.new = (req, res) => {
                 job_id: job.id,
                 role_id: role
             });
+            console.log("=====job_role_notification:", role);
             promiseArray.push(Notification.generateJobRoleNotification(role, job));
         } else if (users && Array.isArray(users) && users.length) {
             users.forEach(user_id => {
@@ -139,6 +144,7 @@ exports.new = (req, res) => {
                     user_id: user_id
                 })
             })
+            console.log("job_user_notification:", users, job);
             promiseArray.push(Notification.generateJobUserNotification(users, job));
         }
         promiseArray.push(mysql.insertMany("job_distribution_list", newJobDistributions));

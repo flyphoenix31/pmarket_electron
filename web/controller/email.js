@@ -125,7 +125,7 @@ exports.new = (req, res) => {
                 job_id: job.id,
                 role_id: role
             });
-            promiseArray.push(Notification.generateJobRoleNotification(role, job));
+            // promiseArray.push(Notification.generateJobRoleNotification(role, job));
         } else if (users && Array.isArray(users) && users.length) {
             users.forEach(user_id => {
                 newJobDistributions.push({
@@ -135,7 +135,7 @@ exports.new = (req, res) => {
                     user_id: user_id
                 })
             })
-            promiseArray.push(Notification.generateJobUserNotification(users, job));
+            // promiseArray.push(Notification.generateJobUserNotification(users, job));
         }
         promiseArray.push(mysql.insertMany("job_distribution_list", newJobDistributions));
         promiseArray.push(mysql.insertMany("job_category", newCategories));
