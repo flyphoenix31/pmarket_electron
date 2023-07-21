@@ -5,6 +5,34 @@ const Email = require('../models/Email');
 const Notification = require('../models/Notification')
 const { getCurrentFormatedDate } = require('../utils');
 
+
+
+exports.compose = (req, res) => {
+    let { send_email, receive_email, content } = req.body; 
+    console.log("---------------compose", req.body);
+    let sql = `insert into emails(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(receive_email) ? '' : receive_email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
+    mysql.query(sql)
+        .then(result => {
+            global.connections.forEach(connection => {
+                console.log("socket connection:", connection.userInfo);
+                if(!isEmpty(connection.userInfo)){
+                    if(receive_email == connection.userInfo.email){
+                        console.log("------------------compose")
+                        connection.emit("sendemail", {send_email: send_email,receive_email:receive_email, content: content,type:"compose"});
+                    }
+                }
+            });
+            return res.json({
+                status: 0
+            })
+        })
+        .catch(err => {
+            res.json({
+                status: 1,
+                message: 'Please try again later.'
+            })
+        })
+}
 exports.list = (req, res) => {
     console.log("-----------------1")
     console.log("req", req.query.page, req.query.perPage)

@@ -132,7 +132,7 @@ exports.savem = (req, res) => {
                             if(!isEmpty(connection.userInfo)){
                                 if(email == connection.userInfo.email){
                                     console.log("------------------111111111111")
-                                    connection.emit("sendemail", {send_email: send_email,receive_email:email, content: content});
+                                    connection.emit("sendemail", {send_email: send_email,receive_email:email, content: content, type:"email"});
                                 }
                             }
                         });
@@ -174,7 +174,7 @@ exports.savem = (req, res) => {
                                 if(!isEmpty(connection.userInfo)){
                                     if(send_email != connection.userInfo.email){
                                         console.log("------------------111111111111")
-                                        connection.emit("sendemail", {send_email: send_email,receive_email: connection.userInfo.email , content: content});
+                                        connection.emit("sendemail", {send_email: send_email,receive_email: connection.userInfo.email , content: content, type:"email"});
                                     }
                                 }
                             });

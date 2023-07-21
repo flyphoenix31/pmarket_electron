@@ -11,5 +11,6 @@ router.get('/categories', EmailController.categories);
 router.post('/new', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.new);
 router.post('/update', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.update);
 router.post('/closeJob', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.closeJob);
+router.post('/compose', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.compose);
 
 module.exports = router;
