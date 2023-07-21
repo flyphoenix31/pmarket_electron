@@ -97,43 +97,101 @@ exports.savetp = (req, res) => {
 
 }
 
-exports.savem = (req, res) => {
-    const { id , email, send_email, token } = req.body;
-    console.log("savem:", req.body);
-    mysql.updateOne('shared', {id: id}, {email: email})
-        .then(result => {
-            console.log("========savemresult", result);  
-            // INSERT INTO time_zone (Time_zone_id, Use_leap_seconds)   VALUES (1,'N'), (2,'N'), (3,'N'), (4,'Y'), (5,'N');
-            let email_sql = `insert into emails(sender_email, receiver_email, token, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(email) ? '' : email}', '${isEmpty(token) ? '' : token}', '${getCurrentFormatedDate()}');`;
-            console.log("emailsql", email_sql);
-            mysql.query(email_sql)
-                .then(result => {
-                    global.connections.forEach(connection => {
-                        console.log("socket connection:", connection.userInfo);
-                        if(!isEmpty(connection.userInfo)){
-                            if(email == connection.userInfo.email){
-                                console.log("------------------")
-                                connection.emit("sendemail", {email: send_email, token: token});
-                            }
-                        }
-                    });
-                    return res.json({
-                        status: 0
-                    })
-                })
-                .catch(err => {
-                    return res.json({
-                        status : 1,
-                        message: "Please try again later"
-                    })
-                })
-        })
-        .catch(err => {
-            return res.json({
-                status : 1,
-                message: "Please try again later"
+exports.userList = async () => {
+    return new Promise((resolve, reject)=> {
+        let sql = `select * from users where deleted_at is NULL;`;
+        mysql.query(sql).then(list => {
+            return resolve({
+                status: 0,
+                list
             })
+        }).catch(err => {
+            console.log(err);
+            return resolve({ status : 1 })
         })
+    })
+}
+
+exports.savem = (req, res) => {
+    let { id , email, send_email, content, shareMode } = req.body;
+    while(content.includes("&#x2F;")){
+        content = content.replace("&#x2F;", "/");
+    }
+    console.log("============savem:", req.body);
+    if(shareMode == 0){
+        mysql.updateOne('shared', {id: id}, {email: email})
+            .then(result => {
+                console.log("========savemresult", result);  
+                // INSERT INTO time_zone (Time_zone_id, Use_leap_seconds)   VALUES (1,'N'), (2,'N'), (3,'N'), (4,'Y'), (5,'N');
+                let email_sql = `insert into emails(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(email) ? '' : email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
+                console.log("emailsql", email_sql);
+                mysql.query(email_sql)
+                    .then(result => {
+                        global.connections.forEach(connection => {
+                            console.log("socket connection:", connection.userInfo);
+                            if(!isEmpty(connection.userInfo)){
+                                if(email == connection.userInfo.email){
+                                    console.log("------------------111111111111")
+                                    connection.emit("sendemail", {send_email: send_email,receive_email:email, content: content});
+                                }
+                            }
+                        });
+                        return res.json({
+                            status: 0
+                        })
+                    })
+                    .catch(err => {
+                        return res.json({
+                            status : 1,
+                            message: "Please try again later"
+                        })
+                    })
+            })
+            .catch(err => {
+                return res.json({
+                    status : 1,
+                    message: "Please try again later"
+                })
+            })
+    }
+    else if(shareMode == 1){
+        this.userList()
+            .then(result => {
+                if(result.status  == 0){
+                    console.log("======userListResult0:", result.list);
+                    let userlist = result.list;
+                    let sqlList = '';
+                    userlist.forEach(user => {
+                        if(send_email != user.email){
+                            sqlList += `insert into emails(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(user.email) ? '' : user.email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
+                        }
+                    })
+                    console.log("--------sqlList:", sqlList);
+                    mysql.query(sqlList)
+                        .then(result => {
+                            global.connections.forEach(connection => {
+                                console.log("socket connection:", connection.userInfo);
+                                if(!isEmpty(connection.userInfo)){
+                                    if(send_email != connection.userInfo.email){
+                                        console.log("------------------111111111111")
+                                        connection.emit("sendemail", {send_email: send_email,receive_email: connection.userInfo.email , content: content});
+                                    }
+                                }
+                            });
+                            return res.json({
+                                status: 0
+                            })
+                        })
+                        .catch(err => {
+                            return res.json({
+                                status : 1,
+                                message: "Please try again later"
+                            })
+                        })
+                }
+                
+            })
+    }
 }
 
 exports.editname = (req, res) => {
