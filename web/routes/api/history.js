@@ -4,7 +4,7 @@ const router = express.Router();
 const { HistoryController } = require('../../controller');
 const { escapeHTMLMiddleware } = require('../../utils');
 
-router.get('/list', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, HistoryController.list);
+router.post('/list', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, HistoryController.list);
 router.get('/findOne', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, HistoryController.findOne);
 router.get('/categories', HistoryController.categories);
 

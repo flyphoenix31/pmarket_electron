@@ -113,7 +113,7 @@ exports.list = (filter) => {
     })
 }
 
-exports.listWithPagination = (cond, page_ = 1, perPage_ = 10) => {
+exports.listWithPagination = (cond, page_, perPage_) => {
     return new Promise((resolve, reject) => {
         mysql.select("quotation", null, { isGetCount: true }).then(totalCount => {
             let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);

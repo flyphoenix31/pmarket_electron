@@ -6,17 +6,22 @@ const Notification = require('../models/Notification')
 const { getCurrentFormatedDate } = require('../utils');
 
 exports.list = (req, res) => {
-    console.log("-----------------1")
-    console.log("req", req.query.page, req.query.perPage)
-    History.listWithPagination({
-        page: req.query.page,
-        perPage: req.query.perPage,
-        extra: { orderBy: { created_at: 'desc' } }
-    }).then(({ list, page, perPage, totalPage }) => {
-        console.log("-----------------2",list)
+    const { page, perPage, kind, searchValue } = req.body;  
+    console.log("==========chathistoryList", req.body);
+    let condition = {};
+    if(isEmpty(searchValue)){
+        condition = { deleted_at: null };
+    }
+    else if(kind == "Sender"){
+        condition = {deleted_at: null, from_user_email: searchValue}
+    }else if(kind == "Receiver"){
+        condition = {deleted_at: null, to_user_email: searchValue}
+    }
+    console.log("=====cond:",condition);
+    History.listWithPagination(condition, page, perPage,{ orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
         return res.json({
             status: 0,
-            list,
+            history: list,
             page, perPage, totalPage
         })
     }).catch(err => {

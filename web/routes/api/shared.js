@@ -11,6 +11,7 @@ router.post('/editname', passport.authenticate('jwt', {session: false}), escapeH
 router.post('/delete', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.delete);
 router.post('/savetp', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.savetp);
 router.post('/savem', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.savem);
+router.post('/history', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.history);
 
 router.post('/sharelogin', SharedController.sharelogin);
 router.post('/sharelist', SharedController.sharelist);

@@ -20,6 +20,35 @@ const validate = (data) => {
     }
 }
 
+
+exports.history = (req, res) => {
+    const { page, perPage, kind, searchValue } = req.body;  
+    console.log("==========chathistoryList", req.body);
+    let condition = {};
+    if(isEmpty(searchValue)){
+        condition = null;
+    }
+    else if(kind == "Sender"){
+        condition = {sender_email: searchValue}
+    }else if(kind == "Receiver"){
+        condition = {receiver_email: searchValue}
+    }
+    console.log("=====cond:",condition);
+    Shared.histlistWithPagination(condition, page, perPage,{ orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
+        return res.json({
+            status: 0,
+            history: list,
+            page, perPage, totalPage
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: 'Please try again later.'
+        })
+    })
+}
+
 exports.sharelogin = (req, res) => {
     let { email, password } = req.body;
     mysql.select("shared", { email, password }).then(([user]) => {
@@ -123,9 +152,9 @@ exports.savem = (req, res) => {
             .then(result => {
                 console.log("========savemresult", result);  
                 // INSERT INTO time_zone (Time_zone_id, Use_leap_seconds)   VALUES (1,'N'), (2,'N'), (3,'N'), (4,'Y'), (5,'N');
-                let email_sql = `insert into emails(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(email) ? '' : email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
-                console.log("emailsql", email_sql);
-                mysql.query(email_sql)
+                let shared_sql = `insert into sharedhistory(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(email) ? '' : email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
+                console.log("sharedsql", shared_sql);
+                mysql.query(shared_sql)
                     .then(result => {
                         global.connections.forEach(connection => {
                             console.log("socket connection:", connection.userInfo);
@@ -163,7 +192,7 @@ exports.savem = (req, res) => {
                     let sqlList = '';
                     userlist.forEach(user => {
                         if(send_email != user.email){
-                            sqlList += `insert into emails(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(user.email) ? '' : user.email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
+                            sqlList += `insert into sharedhistory(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(user.email) ? '' : user.email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
                         }
                     })
                     console.log("--------sqlList:", sqlList);
@@ -224,7 +253,7 @@ exports.editname = (req, res) => {
 exports.delete = (req, res) => {
     const {id} = req.body;
     console.log("sharedeleteid:", id);
-    mysql.updateOne('shared', {id: id}, {is_deleted: 1})
+    mysql.updateOne('shared', {id: id}, {deleted_at: getCurrentFormatedDate()})
         .then(result => {
             res.json({
                 status: 0,
@@ -240,10 +269,10 @@ exports.delete = (req, res) => {
         }) 
 }
 
-exports.list = (req, res) => {
-    let { isDeleted: is_deleted, user_id} = req.body;
+exports.prelist = (req, res) => {
+    let { isDeleted: deleted_at, user_id} = req.body;
     console.log("listbody",req.body);
-    let sql = `select * from shared WHERE is_deleted=0 and user_id='${user_id}' ORDER BY created_at DESC;`;
+    let sql = `select * from shared WHERE deleted_at=Null and user_id='${user_id}' ORDER BY created_at DESC;`;
     mysql.query(sql)
         .then(result => {
             console.log("---------result:")
@@ -253,11 +282,40 @@ exports.list = (req, res) => {
             })
         })
 }
+exports.list = (req, res) => {
+    const { page, perPage, kind, searchValue, user_id } = req.body;
+    console.log("==========sharedList", req.body);
+    let condition = {};
+    if (isEmpty(searchValue)) {
+        condition = { deleted_at: null, user_id: user_id};
+    }
+    else if (kind == "Sender") {
+        condition = { deleted_at: null, sender_email: searchValue, user_id: user_id }
+    }
+    else if (kind == "Receiver") {
+        condition = { deleted_at: null, receiver_email: searchValue, user_id: user_id }
+    }
+    console.log("=====cond:", condition);
+    Shared.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
+        console.log("------list", list)
+        return res.json({
+            status: 0,
+            list,
+            page, perPage, totalPage
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: 'Please try again later.'
+        })
+    })
+}
 
 exports.sharelist = (req, res) => {
-    let { is_deleted, user_id, token} = req.body;
+    let { deleted_at, user_id, token} = req.body;
     console.log("listbody",req.body);
-    let sql = `select * from shared WHERE is_deleted=0 and token='${token}' ORDER BY created_at DESC;`;
+    let sql = `select * from shared WHERE deleted_at=Null and token='${token}' ORDER BY created_at DESC;`;
     mysql.query(sql)
         .then(result => {
             return res.json({
@@ -268,9 +326,9 @@ exports.sharelist = (req, res) => {
 }
 
 exports.gettoken = (req, res) => {
-    let { is_deleted ,token } = req.body;
+    let { deleted_at ,token } = req.body;
     console.log("listbody1111",req.body);
-    let sql = `select * from shared WHERE is_deleted=0 and token='${token}' ORDER BY created_at DESC;`;
+    let sql = `select * from shared WHERE deleted_at=Null and token='${token}' ORDER BY created_at DESC;`;
     mysql.query(sql)
         .then(result => {
             console.log("---------gametokenresult", result);

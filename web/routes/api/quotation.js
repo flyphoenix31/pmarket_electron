@@ -4,7 +4,7 @@ const router = express.Router();
 const { QuotationController } = require('../../controller');
 const { escapeHTMLMiddleware } = require('../../utils');
 
-router.get('/list', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, QuotationController.list);
+router.post('/list', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, QuotationController.list);
 router.get('/findOne', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, QuotationController.findOne);
 
 router.post('/new', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, QuotationController.new);

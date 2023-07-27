@@ -65,6 +65,7 @@ exports.update = (req, res) => {
     if (!isValid) {
         return res.json({
             status: 1,
+            message: "Please try again later",
             errors
         })
     }
@@ -74,34 +75,17 @@ exports.update = (req, res) => {
             message: "Client not found"
         })
     }
-    mysql.select("contacts", { email: req.body.email, id: { neq: req.body.id } }).then(([client]) => {
-        if (client) {
+    Contact.store(req.body, false).then(client => {
+        if (!client) {
             return res.json({
                 status: 1,
-                errors: {
-                    email: "Email already exists"
-                }
+                message: "Client not found"
             })
         }
-        Contact.store(req.body, false).then(client => {
-            if (!client) {
-                return res.json({
-                    status: 1,
-                    message: "Client not found"
-                })
-            }
-            return res.json({
-                status: 0,
-                client,
-                message: "Client changed"
-            });
-        }).catch(err => {
-            console.log(err);
-            return res.json({
-                status: 1,
-                message: "Please try again later"
-            })
-        })
+        return res.json({
+            status: 0,
+            client,
+        });
     }).catch(err => {
         console.log(err);
         return res.json({
@@ -138,42 +122,36 @@ exports.delete = (req, res) => {
     })
 }
 
+
 exports.list = (req, res) => {
-    if (req.query.page !== undefined) {
-        Contact.listWithPagination({
-            cond: null,
-            page: req.query.page,
-            perPage: req.query.perPage,
-            extra: {orderBy: {id: "desc"}}
-        }).then(({ list, page, perPage, totalPage }) => {
-            res.json({
-                status: 0,
-                list,
-                page,
-                perPage,
-                totalPage
-            })
-        }).catch(err => {
-            console.log(err);
-            return res.json({
-                status: 1,
-                message: 'Please try again later'
-            })
-        })
-    } else {
-        Contact.list().then(list => {
-            return res.json({
-                status: 0,
-                list
-            })
-        }).catch(err => {
-            console.log(err);
-            return res.json({
-                status: 1,
-                message: "Please try again later"
-            })
-        })
+    const { page, perPage, kind, searchValue } = req.body;
+    console.log("==========clientList", req.body);
+    let condition = {};
+    if (isEmpty(searchValue)) {
+        condition = { deleted_at: null };
     }
+    else if (kind == "Name") {
+        condition = { deleted_at: null, name: searchValue }
+    } else if (kind == "Email") {
+        condition = { deleted_at: null, email: searchValue }
+    }
+    else if (kind == "Phone") {
+        condition = { deleted_at: null, phone: searchValue }
+    }
+    console.log("=====cond:", condition);
+    Contact.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
+        return res.json({
+            status: 0,
+            list,
+            page, perPage, totalPage
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: 'Please try again later.'
+        })
+    })
 }
 
 exports.findOne = (req, res) => {

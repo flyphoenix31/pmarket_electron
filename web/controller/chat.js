@@ -73,7 +73,6 @@ exports.unreadCounts = (req, res) => {
 }
 
 exports.sendMessage = (req, res) => {
-    console.log("sendmessage:",req.user);
     const { to: to_user, message, userinfo } = req.body;
     let uploadPath = undefined;
     let fileName = undefined;

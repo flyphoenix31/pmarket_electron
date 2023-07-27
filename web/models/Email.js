@@ -14,11 +14,11 @@ const TYPE = {
 }
 exports.TYPE = TYPE;
 
-exports.listWithPagination = ({ cond, page: page_, perPage: perPage_, extra }) => {
+exports.listWithPagination = (cond, page_, perPage_, extra ) => {
     return new Promise((resolve, reject) => {
-        mysql.select("emails", null, { isGetCount: true }).then(totalCount => {
+        mysql.select("emails", cond, { isGetCount: true }).then(totalCount => {
             let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);
-            mysql.select("emails", null, { offset: (page - 1) * perPage, limit: perPage, ...(extra ?? {}) }).then(list => {
+            mysql.select("emails", cond, { offset: (page - 1) * perPage, limit: perPage, ...(extra ?? {}) }).then(list => {
                 resolve({
                     list,
                     page,

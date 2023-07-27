@@ -1,5 +1,5 @@
 const mysql = require('./mysqlConnect')
-const { getCurrentFormatedDate } = require('../utils')
+const { getProperPagination, getCurrentFormatedDate } = require('../utils');
 exports.makeRead = (from_user, to_user) => {
     return new Promise((resolve, reject) => {
         mysql.update('messages', { from_user, to_user, is_read: 0 }, { is_read: 1, updated_at: getCurrentFormatedDate() }).then(() => {
@@ -37,4 +37,44 @@ exports.makeFolder = ( data ) => {
             reject(err);
         })
     });
+}
+
+exports.listWithPagination = (cond, page_, perPage_, extra) => {
+    return new Promise((resolve, reject) => {
+        mysql.select("shared", cond, { isGetCount: true }).then(totalCount => {
+            let {page, perPage, totalPage} = getProperPagination(page_, perPage_, totalCount);
+            mysql.select("shared", cond, {offset: (page - 1) * perPage, limit: perPage, ...(extra ?? {})}).then(list => {
+                resolve({
+                    list,
+                    page,
+                    perPage,
+                    totalPage
+                })
+            }).catch(err => {
+                reject(err);
+            })
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
+exports.histlistWithPagination = (cond, page_, perPage_, extra) => {
+    return new Promise((resolve, reject) => {
+        mysql.select("sharedhistory", cond, { isGetCount: true }).then(totalCount => {
+            let {page, perPage, totalPage} = getProperPagination(page_, perPage_, totalCount);
+            mysql.select("sharedhistory", cond, {offset: (page - 1) * perPage, limit: perPage, ...(extra ?? {})}).then(list => {
+                resolve({
+                    list,
+                    page,
+                    perPage,
+                    totalPage
+                })
+            }).catch(err => {
+                reject(err);
+            })
+        }).catch(err => {
+            reject(err);
+        })
+    })
 }

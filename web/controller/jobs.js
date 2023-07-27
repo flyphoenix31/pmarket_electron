@@ -7,12 +7,22 @@ const { getCurrentFormatedDate } = require('../utils');
 const ioHandler = require('../ioHandler');
 
 exports.list = (req, res) => {
-    console.log("jobsreqquery", req.query);
-    Jobs.listWithPagination({
-        page: req.query.page,
-        perPage: req.query.perPage,
-        extra: { orderBy: { created_at: 'desc' } }
-    }).then(({ list, page, perPage, totalPage }) => {
+    const { page, perPage, kind, searchValue } = req.body;
+    console.log("==========clientList", req.body);
+    let condition = {};
+    if (isEmpty(searchValue)) {
+        condition = { deleted_at: null };
+    }
+    else if (kind == "Name") {
+        condition = { deleted_at: null, name: searchValue }
+    } else if (kind == "Email") {
+        condition = { deleted_at: null, email: searchValue }
+    }
+    else if (kind == "Phone") {
+        condition = { deleted_at: null, phone: searchValue }
+    }
+    console.log("=====cond:", condition);
+    Jobs.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
         return res.json({
             status: 0,
             list,
@@ -174,6 +184,7 @@ exports.update = (req, res) => {
     if (!isValid) {
         return res.json({
             status: 1,
+            message: "Please try again later",
             errors
         });
     }

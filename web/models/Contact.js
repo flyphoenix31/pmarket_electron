@@ -47,11 +47,11 @@ exports.list = () => {
     })
 }
 
-exports.listWithPagination = ({ cond, page: page_, perPage: perPage_, extra }) => {
+exports.listWithPagination = (cond, page_, perPage_, extra) => {
     return new Promise((resolve, reject) => {
         mysql.select("contacts", { deleted_at: null }, { isGetCount: true }).then(totalCount => {
             let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);
-            mysql.select("contacts", { deleted_at: null }, { offset: (page - 1) * perPage, limit: perPage, ...(extra ?? {}) }).then(list => {
+            mysql.select("contacts", cond, { offset: (page - 1) * perPage, limit: perPage, ...(extra ?? {}) }).then(list => {
                 resolve({
                     list,
                     page,

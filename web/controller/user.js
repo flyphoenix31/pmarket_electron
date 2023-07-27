@@ -76,8 +76,19 @@ exports.current = (req, res) => {
 }
 
 exports.list = (req, res) => {
-    console.log("usersreqqueyr", req.query);
-    User.listWithPagination({ deleted_at: null }, req.query.page, req.query.perPage,{ orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
+    const { page, perPage, kind, searchValue } = req.body;  
+    console.log("==========userList", req.body);
+    let condition = {};
+    if(isEmpty(searchValue)){
+        condition = { deleted_at: null };
+    }
+    else if(kind == "Name"){
+        condition = {deleted_at: null, name: searchValue}
+    }else if(kind == "Email"){
+        condition = {deleted_at: null, email: searchValue}
+    }
+    console.log("=====cond:",condition);
+    User.listWithPagination(condition, page, perPage,{ orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
         return res.json({
             status: 0,
             users: list,
@@ -112,6 +123,7 @@ const validate = (user, newUser = true) => {
     const errors = {};
     if (isEmpty(name)) errors.name = 'Name field is required';
     if (isEmpty(email)) errors.email = 'Email field is required';
+    if (!validator.isEmail(email)) errors.email = "Email is invalid";
     if (newUser && isEmpty(password)) errors.password = 'Password field is required';
     if (isEmpty(phone)) errors.phone = 'Phone field is required';
     if (isEmpty(gender)) errors.gender = 'Gender field is required';
@@ -168,6 +180,7 @@ exports.update = (req, res) => {
     if (!isValid) {
         return res.json({
             status: 1,
+            message: "Please try again later",
             errors
         })
     }
@@ -187,6 +200,7 @@ exports.update = (req, res) => {
                 name,
                 phone,
                 gender,
+                email,
                 bio, role_id,
                 updated_at: getCurrentFormatedDate()
             }

@@ -14,7 +14,7 @@ const TYPE = {
 }
 exports.TYPE = TYPE;
 
-exports.listWithPagination = ({ cond, page: page_, perPage: perPage_, extra }) => {
+exports.listWithPagination = (cond, page_, perPage_, extra) => {
     return new Promise((resolve, reject) => {
         mysql.select("freelance_jobs", cond, { isGetCount: true }).then(totalCount => {
             let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);

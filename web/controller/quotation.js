@@ -220,19 +220,32 @@ exports.customerView = (req, res) => {
 }
 
 exports.list = (req, res) => {
-    Quotation.listWithPagination(null, req.query.page, req.query.perPage).then(({ list, page, perPage, totalPage }) => {
-        res.json({
+    const { page, perPage, kind, searchValue } = req.body;
+    console.log("==========clientList", req.body);
+    let condition = {};
+    if (isEmpty(searchValue)) {
+        condition = { deleted_at: null };
+    }
+    else if (kind == "Name") {
+        condition = { deleted_at: null, name: searchValue }
+    } else if (kind == "Email") {
+        condition = { deleted_at: null, email: searchValue }
+    }
+    else if (kind == "Phone") {
+        condition = { deleted_at: null, phone: searchValue }
+    }
+    console.log("=====cond:", condition);
+    Quotation.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
+        return res.json({
             status: 0,
             list,
-            page,
-            perPage,
-            totalPage
+            page, perPage, totalPage
         })
     }).catch(err => {
         console.log(err);
-        return res.json({
+        res.json({
             status: 1,
-            message: 'Please try again later'
+            message: 'Please try again later.'
         })
     })
 }

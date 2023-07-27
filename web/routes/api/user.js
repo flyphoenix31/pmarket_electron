@@ -8,7 +8,7 @@ const { escapeHTMLMiddleware } = require('../../utils');
 
 router.post('/login', escapeHTMLMiddleware, UserController.login);
 router.get('/current', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, UserController.current);
-router.get('/list', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.list);
+router.post('/list', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.list);
 router.get('/jobUsers', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.jobUsers);
 
 router.post('/register', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, UserController.new);

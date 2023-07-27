@@ -4,13 +4,51 @@ const isEmpty = require('../utils/isEmpty');
 const Email = require('../models/Email');
 const Notification = require('../models/Notification')
 const { getCurrentFormatedDate } = require('../utils');
-
+var dotenv = require('dotenv');
+var nodemailer = require('nodemailer');
+const { mailer } = require('../../config');
+const { gmail_email, gmail_password } = mailer;
+var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    // service:'Gmail',
+    // auth: {
+    //     user: `${gmail_email}`,
+    //     pass: `${gmail_password}`,
+    // }
+});
 
 
 exports.compose = (req, res) => {
-    let { send_email, receive_email, content } = req.body; 
-    console.log("---------------compose", req.body);
-    let sql = `insert into emails(sender_email, receiver_email, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(receive_email) ? '' : receive_email}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
+    let { send_email, receive_email, subject, content } = req.body;
+    // let temp = 'hondasmile0401@gmail.com';
+    // var mailOptions = {
+    //     from: `${gmail_email}`,
+    //     to: `${temp}`,
+    //     subject: `${subject}`,
+    //     text: `${content}`,
+    //     html: `<b>${content}</b>`
+    // };
+    // console.log("---------------compose", mailOptions);
+    // transporter.sendMail(mailOptions, function (error, info) {
+    //     if (error) {
+    //         console.log('Message error:', error);
+    //         res.json({
+    //             status: 1,
+    //             message: 'Please try again later.'
+    //         })
+    //     } else {
+    //         console.log('Message sent: ' + info.response);
+    //         res.json({
+    //             status: 0
+    //         })
+    //     }
+    //     transporter.close();
+    // });
+    console.log("newComposeReq", req.body);
+    let sql = `insert into emails(sender_email, receiver_email,subject, content, created_at) values('${isEmpty(send_email) ? '' : send_email}', '${isEmpty(receive_email) ? '' : receive_email}','${isEmpty(subject) ? '' : subject}', '${isEmpty(content) ? '' : content}', '${getCurrentFormatedDate()}');`;
+    console.log("-------newComposeSql", sql);
     mysql.query(sql)
         .then(result => {
             global.connections.forEach(connection => {
@@ -18,7 +56,7 @@ exports.compose = (req, res) => {
                 if(!isEmpty(connection.userInfo)){
                     if(receive_email == connection.userInfo.email){
                         console.log("------------------compose")
-                        connection.emit("sendemail", {send_email: send_email,receive_email:receive_email, content: content,type:"compose"});
+                        connection.emit("sendemail", {send_email: send_email,receive_email:receive_email,subject: subject, content: content,type:"compose"});
                     }
                 }
             });
@@ -33,15 +71,22 @@ exports.compose = (req, res) => {
             })
         })
 }
+
 exports.list = (req, res) => {
-    console.log("-----------------1")
-    console.log("req", req.query.page, req.query.perPage)
-    Email.listWithPagination({
-        page: req.query.page,
-        perPage: req.query.perPage,
-        extra: { orderBy: { created_at: 'desc' } }
-    }).then(({ list, page, perPage, totalPage }) => {
-        console.log("-----------------2",list)
+    const { page, perPage, kind, searchValue } = req.body;
+    console.log("==========clientList", req.body);
+    let condition = {};
+    if (isEmpty(searchValue)) {
+        condition = { deleted_at: null };
+    }
+    else if (kind == "Sender") {
+        condition = { deleted_at: null, sender_email: searchValue }
+    }
+    else if (kind == "Receiver") {
+        condition = { deleted_at: null, receiver_email: searchValue }
+    }
+    console.log("=====cond:", condition);
+    Email.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
         return res.json({
             status: 0,
             list,
@@ -55,7 +100,67 @@ exports.list = (req, res) => {
         })
     })
 }
-
+exports.slist = (req, res) => {
+    const { page, perPage, kind, searchValue, email } = req.body;
+    console.log("==========sclientList", req.body);
+    let condition = {};
+    if (isEmpty(searchValue)) {
+        condition = null;
+        condition = {sender_email: email};
+    }
+    else if (kind == "Name") {
+        condition = { deleted_at: null, name: searchValue, sender_email: email  }
+    } else if (kind == "Email") {
+        condition = { deleted_at: null, email: searchValue, sender_email: email }
+    }
+    else if (kind == "Phone") {
+        condition = { deleted_at: null, phone: searchValue, sender_email: email }
+    }
+    console.log("=====cond:", condition);
+    Email.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
+        return res.json({
+            status: 0,
+            list,
+            page, perPage, totalPage
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: 'Please try again later.'
+        })
+    })
+}
+exports.rlist = (req, res) => {
+    const { page, perPage, kind, searchValue, email } = req.body;
+    console.log("==========rclientList", req.body);
+    let condition = {};
+    if (isEmpty(searchValue)) {
+        condition = {receiver_email: email};
+    }
+    else if (kind == "Name") {
+        condition = { deleted_at: null, name: searchValue, receiver_email: email }
+    } else if (kind == "Email") {
+        condition = { deleted_at: null, email: searchValue, receiver_email: email }
+    }
+    else if (kind == "Phone") {
+        condition = { deleted_at: null, phone: searchValue, receiver_email: email }
+    }
+    console.log("=====cond:", condition);
+    Email.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
+        return res.json({
+            status: 0,
+            list,
+            page, perPage, totalPage
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: 'Please try again later.'
+        })
+    })
+}
 exports.findOne = (req, res) => {
     Job.findOne(req.query.id).then(({ job, categories, jobUsers }) => {
         if (!job) {
@@ -116,7 +221,7 @@ exports.new = (req, res) => {
             errors
         });
     }
-
+    console.log("========newEmail:", req.body);
     let { title, short_description, full_description, job_nature, tags, is_featured, is_urgent, budget, categories, delivery_day, role, users } = req.body;
 
     const newJob = {
