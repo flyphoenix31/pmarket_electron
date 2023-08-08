@@ -5,7 +5,7 @@ const mysql = require('../models/mysqlConnect');
 
 const MailedQuotation = require('../models/MailedQuotation');
 const MailedQuotationController = require('./mailedQuotation');
-const { sendMail } = require('../utils');
+const { sendMail, getCurrentFormatedDate } = require('../utils');
 const config = require('../../config');
 
 const itemValidate = (quotation_item) => {
@@ -246,6 +246,20 @@ exports.list = (req, res) => {
         res.json({
             status: 1,
             message: 'Please try again later.'
+        })
+    })
+}
+exports.delete = (req, res) => {
+    const { id} = req.body;
+    console.log("==============quotationreqbody", req.body)
+    Quotation.update({ id }, { deleted_at: getCurrentFormatedDate()}).then(() => {
+        res.json({
+            status: 0
+        })
+    }).catch(err => {
+        res.json({
+            status: 1,
+            message: 'Please try again later'
         })
     })
 }

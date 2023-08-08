@@ -9,6 +9,7 @@ router.get('/findOne', passport.authenticate('jwt', { session: false }), escapeH
 
 router.post('/new', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, QuotationController.new);
 router.post('/update', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, QuotationController.update);
+router.post('/delete', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, QuotationController.delete);
 router.post('/send-quotation', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, QuotationController.sendQuotation);
 // router.get ('/view-quotation', escapeHTMLMiddleware, QuotationController.customerView);
 

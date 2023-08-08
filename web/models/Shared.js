@@ -78,3 +78,13 @@ exports.histlistWithPagination = (cond, page_, perPage_, extra) => {
         })
     })
 }
+
+exports.hupdate = (cond, updatedUser) => {
+    return new Promise((resolve, reject) => {
+        mysql.update('sharedhistory', cond, updatedUser).then(() => {
+            resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}

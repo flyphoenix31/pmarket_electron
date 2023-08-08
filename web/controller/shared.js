@@ -26,12 +26,12 @@ exports.history = (req, res) => {
     console.log("==========chathistoryList", req.body);
     let condition = {};
     if(isEmpty(searchValue)){
-        condition = null;
+        condition = { deleted_at: null };
     }
     else if(kind == "Sender"){
-        condition = {sender_email: searchValue}
+        condition = {sender_email: searchValue, deleted_at: null };
     }else if(kind == "Receiver"){
-        condition = {receiver_email: searchValue}
+        condition = {receiver_email: searchValue, deleted_at: null };
     }
     console.log("=====cond:",condition);
     Shared.histlistWithPagination(condition, page, perPage,{ orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
@@ -140,6 +140,23 @@ exports.userList = async () => {
         })
     })
 }
+
+
+exports.hdelete = (req, res) => {
+    const { id} = req.body;
+    console.log("==============hdelete", req.body)
+    Shared.hupdate({ id }, { deleted_at: getCurrentFormatedDate()}).then(() => {
+        res.json({
+            status: 0
+        })
+    }).catch(err => {
+        res.json({
+            status: 1,
+            message: 'Please try again later'
+        })
+    })
+}
+
 
 exports.savem = (req, res) => {
     let { id , email, send_email, content, shareMode } = req.body;
@@ -284,7 +301,7 @@ exports.prelist = (req, res) => {
 }
 exports.list = (req, res) => {
     const { page, perPage, kind, searchValue, user_id } = req.body;
-    console.log("==========sharedList", req.body);
+    // console.log("==========sharedList", req.body);
     let condition = {};
     if (isEmpty(searchValue)) {
         condition = { deleted_at: null, user_id: user_id};
@@ -297,7 +314,7 @@ exports.list = (req, res) => {
     }
     console.log("=====cond:", condition);
     Shared.listWithPagination(condition, page, perPage, { orderBy: { created_at: 'desc' } }).then(({ list, page, perPage, totalPage }) => {
-        console.log("------list", list)
+        // console.log("------list", list)
         return res.json({
             status: 0,
             list,

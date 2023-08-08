@@ -103,6 +103,21 @@ exports.list = (req, res) => {
     })
 }
 
+exports.fulllist = (req, res) => {
+    mysql.query("select * from users").then(list => {
+        return res.json({
+            status: 0,
+            list
+        })
+    }).catch(err => {
+        console.log(err);
+        res.json({
+            status: 1,
+            message: 'Please try again later.'
+        })
+    })
+}
+
 exports.jobUsers = (req, res) => {
     mysql.query("select users.* from users, roles where users.role_id = roles.id and roles.name='designer'").then(list => {
         return res.json({
@@ -135,9 +150,24 @@ const validate = (user, newUser = true) => {
     }
 }
 
+const emailvalidate = (user, newUser = true) => {
+    const { the_email, the_password,the_client_token, the_session,the_cookie, the_claim, the_compose_id } = user;
+    const errors = {};
+    if (isEmpty(the_email)) errors.the_email = 'Email field is required';
+    if (isEmpty(the_password)) errors.the_password = 'Password field is required';
+    if (isEmpty(the_client_token)) errors.the_compose_url = 'Client token field is required';
+    if (isEmpty(the_session)) errors.the_session = 'Session field is required';
+    if (isEmpty(the_cookie)) errors.the_cookie = 'Cookie field is required';
+    return {
+        isValid: !Object.keys(errors).length,
+        errors
+    }
+}
+
 exports.delete = (req, res) => {
-    const { id, isDelete } = req.body;
-    User.update({ id }, { deleted_at: isDelete ? "2022-03-27 09:22:22" : null }).then(() => {
+    const { id} = req.body;
+    console.log("==============reqbody", req.body)
+    User.update({ id }, { deleted_at: getCurrentFormatedDate()}).then(() => {
         res.json({
             status: 0
         })
@@ -242,6 +272,55 @@ exports.update = (req, res) => {
         } else {
             saveUser();
         }
+    }).catch(err => {
+        console.log(err);
+        return res.json({
+            status: 1,
+            message: "Please try again later"
+        })
+    })
+}
+
+exports.emailupdate = (req, res) => {
+    console.log("emailupdate", req.body);
+    const { isValid, errors } = emailvalidate(req.body, false);
+    if (!isValid) {
+        return res.json({
+            status: 1,
+            message: "Please try again later",
+            errors
+        })
+    }
+    let { id, the_email, the_password, the_client_token, the_session, the_cookie} = req.body;
+
+    mysql.select("users", { id }).then(([user]) => {
+        if (!user) {
+            return res.json({
+                status: 1,
+                message: "User doesn't exist"
+            })
+        }
+        const updateUser = {
+            the_email,
+            the_password,
+            the_client_token,
+            the_session,
+            the_cookie,
+            updated_at: getCurrentFormatedDate()
+        }
+
+        User.update({ id }, updateUser).then(() => {
+            res.json({
+                status: 0
+            })
+        }).catch(err => {
+            console.log(err);
+            res.json({
+                status: 1,
+                message: 'Please try again later'
+            })
+        })
+
     }).catch(err => {
         console.log(err);
         return res.json({

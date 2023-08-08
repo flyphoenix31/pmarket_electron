@@ -218,6 +218,20 @@ exports.updateinvoicepreview = (req, res) => {
     })
 }
 
+exports.delete = (req, res) => {
+    const { id} = req.body;
+    console.log("==============reqbody", req.body)
+    Invoice.update({ id }, { deleted_at: getCurrentFormatedDate()}).then(() => {
+        res.json({
+            status: 0
+        })
+    }).catch(err => {
+        res.json({
+            status: 1,
+            message: 'Please try again later'
+        })
+    })
+}
 
 exports.list = (req, res) => {
     const { page, perPage, kind, searchValue } = req.body;

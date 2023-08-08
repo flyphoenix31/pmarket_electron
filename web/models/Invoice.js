@@ -11,15 +11,16 @@ const STATUS = {
 }
 exports.STATUS = STATUS;
 
-exports.update = (cond, updatedUser) => {
+exports.update = (cond, updatedInvoice) => {
     return new Promise((resolve, reject) => {
-        mysql.update('invoice_master', cond, updatedUser).then(() => {
+        mysql.update('invoice_master', cond, updatedInvoice).then(() => {
             resolve();
         }).catch(err => {
             reject(err);
         })
     })
 }
+
 exports.store = (data, isNew = true) => {
     return new Promise((resolve, reject) => {
         let { id, name, invoice_number, invoice_date, due_date, notes, company_name, company_email, company_phone, company_address, client_name, client_email, client_phone, client_address, currency_id, items, tax_type_id, tax_value, discount_type_id, discount_value, user_id } = data;
@@ -171,7 +172,7 @@ exports.list = (filter) => {
 
 exports.listWithPagination = (cond, page_, perPage_ = 10, extra) => {
     return new Promise((resolve, reject) => {
-        mysql.select("invoice_master", null, { isGetCount: true }).then(totalCount => {
+        mysql.select("invoice_master", cond, { isGetCount: true }).then(totalCount => {
             let { page, perPage, totalPage } = getProperPagination(page_, perPage_, totalCount);
             mysql.query(
                 `select i.*,
@@ -186,7 +187,7 @@ exports.listWithPagination = (cond, page_, perPage_ = 10, extra) => {
                     s.color as status_color
                 from invoice_master as i 
                 left join users as u on u.id = i.user_id 
-                left join invoice_statuses as s on s.id = i.status_id order by i.id desc limit ${perPage} offset ${perPage * (page - 1)};`
+                left join invoice_statuses as s on s.id = i.status_id where i.deleted_at is null order by i.id desc limit ${perPage} offset ${perPage * (page - 1)};`
             ).then(list => {
                 resolve({
                     list,

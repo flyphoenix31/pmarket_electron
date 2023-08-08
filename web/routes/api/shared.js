@@ -6,12 +6,13 @@ const { escapeHTMLMiddleware } = require('../../utils');
 
 router.post('/new', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.new);
 router.post('/list', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.list);
-router.post('/fileupload', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.fileupload);
-router.post('/editname', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.editname);
-router.post('/delete', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.delete);
-router.post('/savetp', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.savetp);
-router.post('/savem', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.savem);
-router.post('/history', passport.authenticate('jwt', {session: false}), escapeHTMLMiddleware, SharedController.history);
+router.post('/fileupload', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.fileupload);
+router.post('/editname', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.editname);
+router.post('/delete', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.delete);
+router.post('/savetp', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.savetp);
+router.post('/savem', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.savem);
+router.post('/history', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.history);
+router.post('/hdelete', passport.authenticate('jwt', { session: false }), escapeHTMLMiddleware, SharedController.hdelete);
 
 router.post('/sharelogin', SharedController.sharelogin);
 router.post('/sharelist', SharedController.sharelist);

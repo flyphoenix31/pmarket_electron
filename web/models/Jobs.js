@@ -49,6 +49,16 @@ exports.findOne = (id) => {
     })
 }
 
+exports.update = (cond, updatedJob) => {
+    return new Promise((resolve, reject) => {
+        mysql.update('freelance_jobs', cond, updatedJob).then(() => {
+            resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
 exports.closeJob = (id) => {
     return new Promise((resolve, reject) => {
         mysql.updateOne("freelance_jobs", { id }, { status_id: STATUS.CLOSED }).then(job => {

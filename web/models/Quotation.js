@@ -113,6 +113,16 @@ exports.list = (filter) => {
     })
 }
 
+exports.update = (cond, updateQuotation) => {
+    return new Promise((resolve, reject) => {
+    mysql.update('quotation', cond, updateQuotation).then(() => {
+            resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}
+
 exports.listWithPagination = (cond, page_, perPage_) => {
     return new Promise((resolve, reject) => {
         mysql.select("quotation", null, { isGetCount: true }).then(totalCount => {
@@ -126,7 +136,7 @@ exports.listWithPagination = (cond, page_, perPage_) => {
                     u.phone as user_phone,
                     u.work_status as user_work_status
                 from quotation as i 
-                left join users as u on u.id = i.user_id order by i.id desc limit ${perPage} offset ${perPage * (page - 1)};`
+                left join users as u on u.id = i.user_id where i.deleted_at is null order by i.id desc limit ${perPage} offset ${perPage * (page - 1)};`
             ).then(list => {
                 resolve({
                     list,
