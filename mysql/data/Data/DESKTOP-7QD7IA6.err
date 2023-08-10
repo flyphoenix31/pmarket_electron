@@ -8521,3 +8521,4 @@ Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
 2023-08-09T18:30:36.098597Z 0 [Note] Event Scheduler: Loaded 0 events
 2023-08-09T18:30:36.099144Z 0 [Note] E:\mailbox\pmarket_backend\mysql\server\bin\pmarket_mysqld.exe: ready for connections.
 Version: '5.7.42-log'  socket: ''  port: 33061  MySQL Community Server (GPL)
+2023-08-10T02:34:46.216258Z 0 [Note] InnoDB: page_cleaner: 1000ms intended loop took 2418470ms. The settings might not be optimal. (flushed=0 and evicted=0, during the time.)
