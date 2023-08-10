@@ -58,3 +58,13 @@ exports.closeJob = (id) => {
         })
     })
 }
+
+exports.update = (cond, updateEmail) => {
+    return new Promise((resolve, reject) => {
+        mysql.update('emails', cond, updateEmail).then(() => {
+            resolve();
+        }).catch(err => {
+            reject(err);
+        })
+    })
+}

@@ -100,13 +100,13 @@ exports.list = (req, res) => {
         })
     })
 }
+
 exports.slist = (req, res) => {
     const { page, perPage, kind, searchValue, email } = req.body;
     console.log("==========sclientList", req.body);
     let condition = {};
     if (isEmpty(searchValue)) {
-        condition = null;
-        condition = {sender_email: email};
+        condition = { deleted_at: null, sender_email: email};
     }
     else if (kind == "Name") {
         condition = { deleted_at: null, name: searchValue, sender_email: email  }
@@ -131,12 +131,13 @@ exports.slist = (req, res) => {
         })
     })
 }
+
 exports.rlist = (req, res) => {
     const { page, perPage, kind, searchValue, email } = req.body;
     console.log("==========rclientList", req.body);
     let condition = {};
     if (isEmpty(searchValue)) {
-        condition = {receiver_email: email};
+        condition = { deleted_at: null, receiver_email: email};
     }
     else if (kind == "Name") {
         condition = { deleted_at: null, name: searchValue, receiver_email: email }
@@ -161,6 +162,22 @@ exports.rlist = (req, res) => {
         })
     })
 }
+
+exports.delete = (req, res) => {
+    const { id} = req.body;
+    console.log("==============emaildelete", req.body)
+    Email.update({ id }, { deleted_at: getCurrentFormatedDate()}).then(() => {
+        res.json({
+            status: 0
+        })
+    }).catch(err => {
+        res.json({
+            status: 1,
+            message: 'Please try again later'
+        })
+    })
+}
+
 exports.findOne = (req, res) => {
     Job.findOne(req.query.id).then(({ job, categories, jobUsers }) => {
         if (!job) {

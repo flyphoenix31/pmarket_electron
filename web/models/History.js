@@ -35,25 +35,10 @@ exports.listWithPagination = (cond, page_, perPage_, extra) => {
     })
 }
 
-exports.findOne = (id) => {
+exports.update = (cond, updatedUser) => {
     return new Promise((resolve, reject) => {
-        const jobSql = `select * from freelance_jobs where id=${id};`;
-        const categorySql = `select * from job_category where job_id=${id};`;
-        const jobUserSql = `select * from job_users where job_id=${id} and status_id=1;`
-        mysql.query(`${jobSql} ${categorySql} ${jobUserSql}`).then(([[job], categories, jobUsers]) => {
-            return resolve({
-                job, categories, jobUsers
-            });
-        }).catch(err => {
-            reject(err);
-        })
-    })
-}
-
-exports.closeJob = (id) => {
-    return new Promise((resolve, reject) => {
-        mysql.updateOne("freelance_jobs", { id }, { status_id: STATUS.CLOSED }).then(job => {
-            resolve(job);
+        mysql.update('messages', cond, updatedUser).then(() => {
+            resolve();
         }).catch(err => {
             reject(err);
         })

@@ -7,6 +7,7 @@ const { escapeHTMLMiddleware } = require('../../utils');
 router.post('/list', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.list);
 router.post('/slist', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.slist);
 router.post('/rlist', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.rlist);
+router.post('/delete', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.delete);
 router.get('/findOne', passport.authenticate('jwt', { session: false}), escapeHTMLMiddleware, EmailController.findOne);
 router.get('/categories', EmailController.categories);
 
